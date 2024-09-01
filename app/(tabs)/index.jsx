@@ -7,15 +7,25 @@ export default function HomeScreen() {
 
     const letters = selectedWord.split("");
 
-    const rows = Array.from({ length: letters.length }, () =>
-        new Array(letters.length).fill("")
+    const [rows, setRows] = useState(
+        Array.from({ length: letters.length }, () =>
+            new Array(letters.length).fill("")
+        )
     );
 
-    const onKeyPressed = (key) =>{
-        console.warn(key);
-    }
+    const [currentRow, setCurrentRow] = useState(0);
+    const [currentCol, setCurrentCol] = useState(0);
 
-    const handleChange = () => {};
+    const onKeyPressed = (key) => {
+        const newRows = rows.map((row) => [...row]);
+        newRows[currentRow][currentCol] = key;
+        setRows(newRows);
+        setCurrentCol(currentCol + 1);
+        if (key === "DEL") {
+            newRows[currentRow][currentCol] = "";
+            setCurrentCol(currentCol - 1);
+        }
+    };
 
     const checkWord = () => {};
 
@@ -23,9 +33,13 @@ export default function HomeScreen() {
         <View style={styles.containerMain}>
             <View style={styles.container}>
                 {rows.map((row, rowIndex) => (
-                    <View key={rowIndex}>
-                        {letters.map((letter, letterIndex) => (
-                            <View style={styles.cell} key={letterIndex}></View>
+                    <View key={rowIndex} style={styles.row}>
+                        {row.map((cell, cellIndex) => (
+                            <View key={cellIndex} style={styles.cell}>
+                                <Text style={styles.cellText}>
+                                    {cell.toUpperCase()}
+                                </Text>
+                            </View>
                         ))}
                     </View>
                 ))}
@@ -35,14 +49,14 @@ export default function HomeScreen() {
                     Check Answer
                 </Text>
             </Pressable>
-            <KeyboardLayout onKeyPressed={onKeyPressed}/>
+            <KeyboardLayout onKeyPressed={onKeyPressed} />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
+        flexDirection: "column",
     },
     containerMain: {
         flexDirection: "column",
@@ -50,13 +64,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    row: {
+        flexDirection: "row",
+    },
     cell: {
         width: 50,
         height: 50,
         backgroundColor: "#4a4a4a",
-        textAlign: "center",
-        color: "white",
-        fontSize: 25,
+        alignItems: "center",
+        justifyContent: "center",
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
@@ -69,5 +85,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         top: 40,
         borderRadius: 8,
+    },
+    cellText: {
+        color: "white",
+        fontSize: 25,
+        fontWeight: "bold",
     },
 });
