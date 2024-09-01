@@ -25,7 +25,7 @@ export default function Keyboard() {
 
 const styles = StyleSheet.create({
     keyboard:{
-        top:240
+        top:80
     },
     
     row: {

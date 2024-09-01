@@ -1,34 +1,37 @@
 import { useState } from "react";
-import { StyleSheet, View, TextInput, Pressable,Text } from "react-native";
-import KeyboardLayout from "../../components/Keyboard"
+import { StyleSheet, View, Pressable, Text } from "react-native";
+import KeyboardLayout from "../../components/Keyboard";
 
 export default function HomeScreen() {
-    
-    const [selectedWord,setSelectedWord] = useState("fatma");
+    const [selectedWord, setSelectedWord] = useState("fatma");
 
     const letters = selectedWord.split("");
 
-    const handleChange = () => {
+    const rows = Array.from({ length: letters.length }, () =>
+        new Array(letters.length).fill("")
+    );
 
-    };
+    const handleChange = () => {};
 
-    const checkWord = () => {
-    
-  };
+    const checkWord = () => {};
 
     return (
         <View style={styles.containerMain}>
             <View style={styles.container}>
-            {
-              letters.map((letter)=>(
-                <View style={styles.cell}></View>
-              ))
-            }
+                {rows.map((row, rowIndex) => (
+                    <View key={rowIndex}>
+                        {letters.map((letter, letterIndex) => (
+                            <View style={styles.cell} key={letterIndex}></View>
+                        ))}
+                    </View>
+                ))}
             </View>
             <Pressable style={styles.button} onPress={checkWord}>
-                    <Text style={{fontWeight:'bold', textAlign:'center'}}>Check Answer</Text>
+                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                    Check Answer
+                </Text>
             </Pressable>
-            <KeyboardLayout></KeyboardLayout>
+            <KeyboardLayout />
         </View>
     );
 }
@@ -52,15 +55,15 @@ const styles = StyleSheet.create({
         fontSize: 25,
         marginHorizontal: 8,
         marginVertical: 8,
-        borderRadius:8
+        borderRadius: 8,
     },
-    button:{
+    button: {
         width: 200,
         height: 50,
         backgroundColor: "#50ad44",
-        alignItems:'center',
-        justifyContent:'center',
-        top:10,
-        borderRadius:8
-    }
+        alignItems: "center",
+        justifyContent: "center",
+        top: 40,
+        borderRadius: 8,
+    },
 });
