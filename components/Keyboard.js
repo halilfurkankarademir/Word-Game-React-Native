@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 
 export default function Keyboard() {
+    
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
@@ -13,9 +14,12 @@ export default function Keyboard() {
             {keys.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.row}>
                     {row.map((key, keyIndex) => (
-                        <Text key={keyIndex} style={styles.key}>
-                            {key}
-                        </Text>
+                        <Pressable
+                            key={keyIndex}
+                            style={styles.key}
+                        >
+                            <Text style={styles.keyText}>{key}</Text>
+                        </Pressable>
                     ))}
                 </View>
             ))}
@@ -24,22 +28,23 @@ export default function Keyboard() {
 }
 
 const styles = StyleSheet.create({
-    keyboard:{
-        top:80
+    keyboard: {
+        top: 80,
     },
-    
     row: {
         flexDirection: "row",
         justifyContent: "center",
         marginBottom: 10,
     },
     key: {
-        color: "white",
         marginHorizontal: 4,
         padding: 10,
         backgroundColor: "#333",
-        textAlign: "center",
         borderRadius: 5,
-        fontSize:20
+    },
+    keyText: {
+        color: "white",
+        textAlign: "center",
+        fontSize: 20,
     },
 });
