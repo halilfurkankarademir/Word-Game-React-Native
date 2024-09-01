@@ -11,6 +11,10 @@ export default function HomeScreen() {
         new Array(letters.length).fill("")
     );
 
+    const onKeyPressed = (key) =>{
+        console.warn(key);
+    }
+
     const handleChange = () => {};
 
     const checkWord = () => {};
@@ -31,7 +35,7 @@ export default function HomeScreen() {
                     Check Answer
                 </Text>
             </Pressable>
-            <KeyboardLayout/>
+            <KeyboardLayout onKeyPressed={onKeyPressed}/>
         </View>
     );
 }

@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 
-export default function Keyboard() {
-    
+export default function KeyboardLayout ({ onKeyPressed }) {
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
@@ -14,10 +13,7 @@ export default function Keyboard() {
             {keys.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.row}>
                     {row.map((key, keyIndex) => (
-                        <Pressable
-                            key={keyIndex}
-                            style={styles.key}
-                        >
+                        <Pressable key={keyIndex} style={styles.key} onPress={()=>onKeyPressed(key)}>
                             <Text style={styles.keyText}>{key}</Text>
                         </Pressable>
                     ))}
