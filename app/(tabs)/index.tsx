@@ -31,7 +31,7 @@ export default function HomeScreen() {
                     Check Answer
                 </Text>
             </Pressable>
-            <KeyboardLayout />
+            <KeyboardLayout/>
         </View>
     );
 }
