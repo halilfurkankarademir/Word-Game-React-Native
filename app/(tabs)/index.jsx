@@ -18,12 +18,18 @@ export default function HomeScreen() {
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
-        newRows[currentRow][currentCol] = key;
-        setRows(newRows);
-        setCurrentCol(currentCol + 1);
+
         if (key === "DEL") {
-            newRows[currentRow][currentCol] = "";
-            setCurrentCol(currentCol - 1);
+            const prevCol = currentCol - 1;
+            newRows[currentRow][prevCol] = "";
+            setRows(newRows);
+            setCurrentCol(prevCol);
+        }
+
+        else{
+            newRows[currentRow][currentCol] = key;
+            setRows(newRows);
+            setCurrentCol(currentCol + 1);
         }
     };
 
