@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable, Text } from "react-native";
-import GameScreen from "../app/GameScreen";
+import GameScreen from "./GameScreen";
 import { useState } from "react";
 
 export default function HomeScreen() {
