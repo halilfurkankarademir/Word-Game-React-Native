@@ -4,7 +4,7 @@ import {
     Pressable,
     Text,
     ActivityIndicator,
-    Image
+    Image,
 } from "react-native";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png"
+
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -135,7 +136,7 @@ export default function GameScreen() {
 
     if (loading) {
         return (
-            <View style={styles.container}>
+            <View style={styles.containerMain}>
                 <ActivityIndicator size="large" color="#fff" />
                 <Text style={{ fontFamily: "Poppins", color: "white" }}>
                     Loading...
@@ -144,7 +145,7 @@ export default function GameScreen() {
         );
     }
 
-    const handlePress = (directory) => {
+    const handlePress = () => {
         router.push('/');
     };
     return (
@@ -211,6 +212,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
     },
+    
     button: {
         backgroundColor: '#009f1a',
         borderRadius: 4,
@@ -246,7 +248,8 @@ const styles = StyleSheet.create({
     },
     containerMain:{
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        flex:1
     },
     homeIco: {
         bottom:105,

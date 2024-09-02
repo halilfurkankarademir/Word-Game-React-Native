@@ -25,7 +25,7 @@ export default function KeyboardLayout ({ onKeyPressed }) {
 
 const styles = StyleSheet.create({
     keyboard: {
-        top: 425,
+        top: 640,
         right:0,
         left:0,
         position:'absolute'
