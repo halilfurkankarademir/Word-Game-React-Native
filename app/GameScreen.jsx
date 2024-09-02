@@ -1,10 +1,10 @@
 import { StyleSheet, View, Pressable, Text } from "react-native";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
 
 export default function GameScreen() {
-    const [selectedWord, setSelectedWord] = useState("fatma");
+    const [selectedWord, setSelectedWord] = useState("yarak");
 
     const letters = selectedWord.split("");
 
@@ -58,11 +58,11 @@ export default function GameScreen() {
 
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
-                newColors[currentRow][i] = "#bd8e04";
+                newColors[currentRow][i] = "#dea709"; // If word includes letter make it's bg is yellow
             }
 
             if (letters[i] === word[i]) {
-                newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it bg is green
+                newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it's bg is green
                 setRightLetterLength((prev) => prev + 1);
             }
         }
@@ -85,6 +85,16 @@ export default function GameScreen() {
                                     {
                                         backgroundColor:
                                             colors[rowIndex][cellIndex],
+                                        borderColor:
+                                            rowIndex === currentRow &&
+                                            cellIndex === currentCol
+                                                ? "#969696" 
+                                                : "transparent",
+                                        borderWidth:
+                                            rowIndex === currentRow &&
+                                            cellIndex === currentCol
+                                                ? 2
+                                                : 0,
                                     },
                                 ]}
                             >
