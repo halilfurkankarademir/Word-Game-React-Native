@@ -7,13 +7,13 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsBold : require('../assets/fonts/Poppins-Bold.ttf')
   });
 
   useEffect(() => {
@@ -28,8 +28,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack initialRouteName='HomeScreen'>
+        <Stack.Screen name='index' options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='HomeScreen' options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='GameScreen' options={{headerShown:false}}></Stack.Screen>
       </Stack>
     </ThemeProvider>
   );

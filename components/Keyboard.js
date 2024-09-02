@@ -14,7 +14,7 @@ export default function KeyboardLayout ({ onKeyPressed }) {
                 <View key={rowIndex} style={styles.row}>
                     {row.map((key, keyIndex) => (
                         <Pressable key={keyIndex} style={styles.key} onPress={()=>onKeyPressed(key)}>
-                            <Text style={styles.keyText}>{key}</Text>
+                            <Text style={styles.keyText}>{key.toLocaleUpperCase()}</Text>
                         </Pressable>
                     ))}
                 </View>
@@ -42,5 +42,6 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         fontSize: 20,
+        fontFamily:'Poppins'
     },
 });

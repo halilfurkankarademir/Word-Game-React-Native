@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        left: 15,
+        left: 20,
     },
     button: {
         width: 200,
@@ -207,5 +207,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 25,
         fontWeight: "bold",
+        fontFamily:'Poppins'
     },
 });
