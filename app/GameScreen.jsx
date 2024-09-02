@@ -13,6 +13,7 @@ import KeyboardLayout from "../components/Keyboard";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Logo from "../assets/images/wh_logo_small.png"
 
 export default function GameScreen() {
@@ -144,7 +145,7 @@ export default function GameScreen() {
         );
     }
 
-    const handlePress = () => {
+    const handlePress = (directory) => {
         router.push('/');
     };
     return (
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
         shadowRadius: 0,
         elevation: 1,
         width:200,
-        bottom:'10%'
+        bottom:'2%'
     },
     cell: {
         width: 50,
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        bottom: 100,
+        bottom: 50,
     },
     cellText: {
         color: "white",
@@ -249,14 +250,13 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     homeIco: {
-        bottom: 100,
-        zIndex:2,
-        position:'relative'
+        bottom:105,
+        right:140,
     },
     logo:{
         width:100,
         position:'absolute',
-        bottom:'5%',
+        bottom:'-5%',
         alignItems:'center',
         justifyContent:'center',
         textAlign:'center'
