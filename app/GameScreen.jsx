@@ -14,10 +14,17 @@ export default function GameScreen() {
         )
     );
 
-    const [word,setWord] = useState([]);
+    const [colors, setColors] = useState(
+        Array.from({ length: letters.length }, () =>
+            new Array(letters.length).fill("#4a4a4a")
+        )
+    );
+
+    const [word, setWord] = useState([]);
     const [currentRow, setCurrentRow] = useState(0);
     const [currentCol, setCurrentCol] = useState(0);
     const [length, setLength] = useState(0);
+    const [rightLetterLength,setRightLetterLength]= useState(0);
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
@@ -26,7 +33,7 @@ export default function GameScreen() {
             if (currentCol > 0) {
                 const prevCol = currentCol - 1;
                 newRows[currentRow][prevCol] = "";
-                setWord((prev)=>prev.slice(0,-1));
+                setWord((prev) => prev.slice(0, -1));
                 setRows(newRows);
                 setCurrentCol(prevCol);
                 setLength((prev) => prev - 1);
@@ -34,17 +41,27 @@ export default function GameScreen() {
         } else {
             if (currentCol < letters.length) {
                 newRows[currentRow][currentCol] = key;
-                setWord((prev)=>[...prev,key]);
+                setWord((prev) => [...prev, key]);
                 setRows(newRows);
                 setCurrentCol(currentCol + 1);
                 setLength((prev) => prev + 1);
             }
         }
-
     };
 
     const checkWord = () => {
-        alert(word);
+
+        const newColors = colors.map((row) => [...row]);
+
+        for (let i = 0; i < letters.length; i++) {
+            if(letters[i]===word[i]){
+                newColors[currentRow][i] = "#50ad44";
+                setRightLetterLength(prev=>prev+1);
+            }
+        }
+        
+        setColors(newColors);
+
     };
 
     return (
@@ -53,7 +70,7 @@ export default function GameScreen() {
                 {rows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.row}>
                         {row.map((cell, cellIndex) => (
-                            <View key={cellIndex} style={styles.cell}>
+                            <View key={cellIndex}  style={[styles.cell, { backgroundColor: colors[rowIndex][cellIndex] }]}>
                                 <Text style={styles.cellText}>
                                     {cell.toUpperCase()}
                                 </Text>
@@ -85,7 +102,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        left:15
+        left: 15,
     },
     button: {
         width: 200,
@@ -95,7 +112,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         top: 40,
         borderRadius: 8,
-        left:'20%'
+        left: "20%",
     },
     cellText: {
         color: "white",
