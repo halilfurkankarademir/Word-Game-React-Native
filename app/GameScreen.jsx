@@ -4,14 +4,16 @@ import {
     Pressable,
     Text,
     ActivityIndicator,
+    Image
 } from "react-native";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Logo from "../assets/images/wh_logo_small.png"
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -150,7 +152,7 @@ export default function GameScreen() {
             <Pressable onPress={handlePress} style={styles.homeIco}>
                 <Ionicons name="home" size={24} color="white"/>
             </Pressable>
-            <Text style={styles.title}>Word Hunt</Text>
+            <Image source={Logo} style={styles.logo} resizeMode="center"></Image>
             <View style={styles.container}>
                 {rows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.row}>
@@ -189,13 +191,14 @@ export default function GameScreen() {
                         fontWeight: "bold",
                         textAlign: "center",
                         fontSize: 20,
+                        color:'white'
                     }}
                 >
                     Check Answer{" "}
                     <FontAwesome
                         name="check-square-o"
-                        size={20}
-                        color="black"
+                        size={18}
+                        color="white"
                     />
                 </Text>
             </Pressable>
@@ -209,14 +212,20 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     button: {
-        width: 200,
-        height: 50,
-        backgroundColor: "#50ad44",
-        alignItems: "center",
-        justifyContent: "center",
-        bottom: 60,
-        borderRadius: 8,
-        left: "20%",
+        backgroundColor: '#009f1a',
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#ffffff',
+        paddingVertical: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#e67a73',
+        shadowOffset: { width: 0, height: 39 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 1,
+        width:200,
+        bottom:'10%'
     },
     cell: {
         width: 50,
@@ -235,11 +244,22 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontFamily: "Poppins",
     },
+    containerMain:{
+        justifyContent:'center',
+        alignItems:'center'
+    },
     homeIco: {
         bottom: 100,
-        left: 15,
         zIndex:2,
         position:'relative'
+    },
+    logo:{
+        width:100,
+        position:'absolute',
+        bottom:'5%',
+        alignItems:'center',
+        justifyContent:'center',
+        textAlign:'center'
     },
     title: {
         color: "white",
