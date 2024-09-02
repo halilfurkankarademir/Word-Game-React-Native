@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text ,ActivityIndicator} from "react-native";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
 import React from "react";
@@ -9,8 +9,16 @@ export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon,setHasWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
+    const [loading,setLoading] = useState(true);
 
     const router = useRouter();
+
+    useEffect(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
+      }, []);
+
 
     useEffect(() => {  //Update layout for each random word
         if (selectedWord) {
@@ -115,6 +123,16 @@ export default function GameScreen() {
             router.push('/HomeScreen');
         }
     }, [rightLetterLength, letters.length]);
+
+    
+    if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#fff" />
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
+  }
 
     return (
         <View style={styles.containerMain}>
