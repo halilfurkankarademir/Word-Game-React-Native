@@ -25,10 +25,6 @@ export default function GameScreen() {
         }
     }, [selectedWord]);
 
-    useEffect(() => {
-        randomWord();
-    }, []);
-
     function getRandomNumber(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -45,6 +41,18 @@ export default function GameScreen() {
         )
     );
 
+    useEffect(() => {
+        randomWord();
+    }, []);
+
+    useEffect(() => {
+        if (rightLetterLength === letters.length) {
+            alert("You won!");
+            setHasWon(true);
+        }
+    }, [rightLetterLength, letters.length]);
+
+    
     const [colors, setColors] = useState(
         Array.from({ length: letters.length }, () =>
             new Array(letters.length).fill("#4a4a4a")
@@ -54,7 +62,7 @@ export default function GameScreen() {
     const [word, setWord] = useState([]);
     const [currentRow, setCurrentRow] = useState(0);
     const [currentCol, setCurrentCol] = useState(0);
-    const [rightLetterLength, setRightLetterLength] = useState(0);
+    const [rightLetterLength, setRightLetterLength] = useState("");
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
@@ -83,24 +91,22 @@ export default function GameScreen() {
 
     const checkWord = () => {
         const newColors = colors.map((row) => [...row]);
+        let correctLettersCount = 0;
 
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
                 newColors[currentRow][i] = "#dea709"; // If word includes that letter make it's bg is yellow
             }
             else{
-                newColors[currentRow][i] = "#919191";
+                newColors[currentRow][i] = "#919191"; // If word doesn't include letter make it's bg light gray
             }
             if (letters[i] === word[i]) {
                 newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it's bg is green
-                setRightLetterLength((prev) => prev + 1);
+                correctLettersCount++;
             }
             
         }
-        if(rightLetterLength===letters.length){
-            alert("You won!");
-            setHasWon(true);
-        }
+        setRightLetterLength(correctLettersCount);
         setCurrentRow((prevRow) => prevRow + 1);
         setCurrentCol(0);
         setWord([]);
