@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
+import { useRouter } from 'expo-router'; 
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon,setHasWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
+
+    const router = useRouter();
 
     useEffect(() => {  //Update layout for each random word
         if (selectedWord) {
@@ -109,6 +112,7 @@ export default function GameScreen() {
         if (rightLetterLength === letters.length) {
             alert("You won!");
             setHasWon(true);
+            router.push('/HomeScreen');
         }
     }, [rightLetterLength, letters.length]);
 
