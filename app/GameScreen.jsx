@@ -1,13 +1,44 @@
 import { StyleSheet, View, Pressable, Text } from "react-native";
-import { useState,useEffect } from "react";
+import { useEffect, useState } from "react";
+import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
 
 export default function GameScreen() {
-    const [selectedWord, setSelectedWord] = useState("yarak");
+    const [selectedWord, setSelectedWord] = useState("");
+
+    const [wordsData, setWordsData] = useState(WordsJson);
+
+    useEffect(() => {
+        if (selectedWord) {
+            const letters = selectedWord.split("");
+            setRows(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("")
+                )
+            );
+            setColors(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("#4a4a4a")
+                )
+            );
+        }
+    }, [selectedWord]);
+
+    useEffect(() => {
+        randomWord();
+    }, []);
+
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const randomWord = () => {
+        const randomIndex = getRandomNumber(0, wordsData.length - 1);
+        setSelectedWord(wordsData[randomIndex]);
+    };
 
     const letters = selectedWord.split("");
-
     const [rows, setRows] = useState(
         Array.from({ length: letters.length }, () =>
             new Array(letters.length).fill("")
@@ -23,7 +54,6 @@ export default function GameScreen() {
     const [word, setWord] = useState([]);
     const [currentRow, setCurrentRow] = useState(0);
     const [currentCol, setCurrentCol] = useState(0);
-    const [length, setLength] = useState(0);
     const [rightLetterLength, setRightLetterLength] = useState(0);
 
     const onKeyPressed = (key) => {
@@ -38,7 +68,6 @@ export default function GameScreen() {
                 setWord((prev) => prev.slice(0, -1));
                 setRows(newRows);
                 setCurrentCol(prevCol);
-                setLength((prev) => prev - 1);
             }
         } else {
             if (currentCol < letters.length) {
@@ -46,7 +75,6 @@ export default function GameScreen() {
                 setWord((prev) => [...prev, key]);
                 setRows(newRows);
                 setCurrentCol(currentCol + 1);
-                setLength((prev) => prev + 1);
             }
         }
 
@@ -88,7 +116,7 @@ export default function GameScreen() {
                                         borderColor:
                                             rowIndex === currentRow &&
                                             cellIndex === currentCol
-                                                ? "#969696" 
+                                                ? "#969696"
                                                 : "transparent",
                                         borderWidth:
                                             rowIndex === currentRow &&
