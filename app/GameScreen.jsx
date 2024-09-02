@@ -28,11 +28,14 @@ export default function GameScreen() {
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
+        const newColors = colors.map((row) => [...row]);
+
 
         if (key === "DEL") {
             if (currentCol > 0) {
                 const prevCol = currentCol - 1;
                 newRows[currentRow][prevCol] = "";
+                newColors[currentRow][prevCol] = "#4a4a4a";
                 setWord((prev) => prev.slice(0, -1));
                 setRows(newRows);
                 setCurrentCol(prevCol);
@@ -47,6 +50,8 @@ export default function GameScreen() {
                 setLength((prev) => prev + 1);
             }
         }
+
+        setColors(newColors);
     };
 
     const checkWord = () => {
@@ -59,7 +64,7 @@ export default function GameScreen() {
                 setRightLetterLength(prev=>prev+1);
             }
         }
-        
+
         setColors(newColors);
 
     };
