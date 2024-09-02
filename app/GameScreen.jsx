@@ -6,10 +6,10 @@ import KeyboardLayout from "../components/Keyboard";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
-
+    const [hasWon,setHasWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
 
-    useEffect(() => {
+    useEffect(() => {  //Update layout for each random word
         if (selectedWord) {
             const letters = selectedWord.split("");
             setRows(
@@ -35,7 +35,7 @@ export default function GameScreen() {
 
     const randomWord = () => {
         const randomIndex = getRandomNumber(0, wordsData.length - 1);
-        setSelectedWord(wordsData[randomIndex]);
+        setSelectedWord(wordsData[randomIndex]);  //Select random word from words data
     };
 
     const letters = selectedWord.split("");
@@ -72,7 +72,7 @@ export default function GameScreen() {
         } else {
             if (currentCol < letters.length) {
                 newRows[currentRow][currentCol] = key;
-                setWord((prev) => [...prev, key]);
+                setWord((prev) => [...prev, key]); // Add selected key to word array
                 setRows(newRows);
                 setCurrentCol(currentCol + 1);
             }
@@ -86,13 +86,20 @@ export default function GameScreen() {
 
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
-                newColors[currentRow][i] = "#dea709"; // If word includes letter make it's bg is yellow
+                newColors[currentRow][i] = "#dea709"; // If word includes that letter make it's bg is yellow
             }
-
+            else{
+                newColors[currentRow][i] = "#919191";
+            }
             if (letters[i] === word[i]) {
                 newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it's bg is green
                 setRightLetterLength((prev) => prev + 1);
             }
+            
+        }
+        if(rightLetterLength===letters.length){
+            alert("You won!");
+            setHasWon(true);
         }
         setCurrentRow((prevRow) => prevRow + 1);
         setCurrentCol(0);
@@ -136,7 +143,7 @@ export default function GameScreen() {
             </View>
             <Pressable style={styles.button} onPress={checkWord}>
                 <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-                    Check Answer
+                    Check Answer {selectedWord}
                 </Text>
             </Pressable>
             <KeyboardLayout onKeyPressed={onKeyPressed} />
