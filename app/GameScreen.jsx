@@ -126,13 +126,13 @@ export default function GameScreen() {
         setColors(newColors);
     };
 
-    // useEffect(() => {
-    //     if (rightLetterLength === letters.length) {
-    //         alert("You won!");
-    //         setHasWon(true);
-    //         router.push('/HomeScreen');
-    //     }
-    // }, [rightLetterLength, letters.length]);
+    useEffect(() => {
+        if (rightLetterLength === letters.length) {
+            alert("You won!");
+            setHasWon(true);
+            router.push('/HomeScreen');
+        }
+    }, [rightLetterLength, letters.length]);
 
     if (loading) {
         return (
