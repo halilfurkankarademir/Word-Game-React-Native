@@ -35,7 +35,7 @@ export default function GameScreen() {
     };
 
     const letters = selectedWord.split("");
-    const [rows, setRows] = useState(
+    const [rows, setRows] = useState( //Create rows up to the letters length
         Array.from({ length: letters.length }, () =>
             new Array(letters.length).fill("")
         )
@@ -45,14 +45,6 @@ export default function GameScreen() {
         randomWord();
     }, []);
 
-    useEffect(() => {
-        if (rightLetterLength === letters.length) {
-            alert("You won!");
-            setHasWon(true);
-        }
-    }, [rightLetterLength, letters.length]);
-
-    
     const [colors, setColors] = useState(
         Array.from({ length: letters.length }, () =>
             new Array(letters.length).fill("#4a4a4a")
@@ -112,6 +104,13 @@ export default function GameScreen() {
         setWord([]);
         setColors(newColors);
     };
+    
+    useEffect(() => {
+        if (rightLetterLength === letters.length) {
+            alert("You won!");
+            setHasWon(true);
+        }
+    }, [rightLetterLength, letters.length]);
 
     return (
         <View style={styles.containerMain}>
