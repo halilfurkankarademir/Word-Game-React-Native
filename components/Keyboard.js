@@ -25,7 +25,10 @@ export default function KeyboardLayout ({ onKeyPressed }) {
 
 const styles = StyleSheet.create({
     keyboard: {
-        top: 80,
+        top: 425,
+        right:0,
+        left:0,
+        position:'absolute'
     },
     row: {
         flexDirection: "row",

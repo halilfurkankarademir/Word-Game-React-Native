@@ -12,7 +12,13 @@ export default function HomeScreen() {
                 <>
                 <Text style={styles.title}>Word Hunt</Text>
                 <Pressable style={styles.buttons} onPress={()=>setHasClickedPlay(true)}>
-                    <Text style={styles.text}>Play the game</Text>
+                    <Text style={styles.text}>Play</Text>
+                </Pressable>
+                <Pressable style={styles.buttons}>
+                    <Text style={styles.text}>Settings</Text>
+                </Pressable>
+                <Pressable style={styles.buttons} onPress={()=>setHasClickedPlay(true)}>
+                    <Text style={styles.text}>How to play?</Text>
                 </Pressable>
                 </>
             )}
@@ -33,16 +39,20 @@ const styles = StyleSheet.create({
     title:{
         color:'white',
         fontWeight:'bold',
-        bottom:'30%',
-        fontSize:20
+        bottom:'5%',
+        fontSize:50
     },
     text:{
         color:'white',
-        fontSize:15
+        fontSize:20,
+        textAlign:'center',
+        fontFamily:'PoppinsBold'
     },
     buttons:{
         backgroundColor:'#0083e0',
         padding:10,
-        borderRadius:8
+        borderRadius:8,
+        width:150,
+        marginTop:20 
     }
 });

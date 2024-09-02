@@ -1,26 +1,34 @@
-import { StyleSheet, View, Pressable, Text ,ActivityIndicator} from "react-native";
+import {
+    StyleSheet,
+    View,
+    Pressable,
+    Text,
+    ActivityIndicator,
+} from "react-native";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
-import { useRouter } from 'expo-router'; 
+import { Redirect, useRouter } from "expo-router";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
-    const [hasWon,setHasWon] = useState(false);
+    const [hasWon, setHasWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
-    const [loading,setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
     useEffect(() => {
         setTimeout(() => {
-          setLoading(false);
+            setLoading(false);
         }, 3000);
-      }, []);
+    }, []);
 
-
-    useEffect(() => {  //Update layout for each random word
+    useEffect(() => {
+        //Update layout for each random word
         if (selectedWord) {
             const letters = selectedWord.split("");
             setRows(
@@ -42,11 +50,12 @@ export default function GameScreen() {
 
     const randomWord = () => {
         const randomIndex = getRandomNumber(0, wordsData.length - 1);
-        setSelectedWord(wordsData[randomIndex]);  //Select random word from words data
+        setSelectedWord(wordsData[randomIndex]); //Select random word from words data
     };
 
     const letters = selectedWord.split("");
-    const [rows, setRows] = useState( //Create rows up to the letters length
+    const [rows, setRows] = useState(
+        //Create rows up to the letters length
         Array.from({ length: letters.length }, () =>
             new Array(letters.length).fill("")
         )
@@ -99,15 +108,13 @@ export default function GameScreen() {
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
                 newColors[currentRow][i] = "#dea709"; // If word includes that letter make it's bg is yellow
-            }
-            else{
+            } else {
                 newColors[currentRow][i] = "#919191"; // If word doesn't include letter make it's bg light gray
             }
             if (letters[i] === word[i]) {
                 newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it's bg is green
                 correctLettersCount++;
             }
-            
         }
         setRightLetterLength(correctLettersCount);
         setCurrentRow((prevRow) => prevRow + 1);
@@ -115,27 +122,35 @@ export default function GameScreen() {
         setWord([]);
         setColors(newColors);
     };
-    
-    useEffect(() => {
-        if (rightLetterLength === letters.length) {
-            alert("You won!");
-            setHasWon(true);
-            router.push('/HomeScreen');
-        }
-    }, [rightLetterLength, letters.length]);
 
-    
+    // useEffect(() => {
+    //     if (rightLetterLength === letters.length) {
+    //         alert("You won!");
+    //         setHasWon(true);
+    //         router.push('/HomeScreen');
+    //     }
+    // }, [rightLetterLength, letters.length]);
+
     if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#fff" />
-        <Text>Yükleniyor...</Text>
-      </View>
-    );
-  }
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#fff" />
+                <Text style={{ fontFamily: "Poppins", color: "white" }}>
+                    Loading...
+                </Text>
+            </View>
+        );
+    }
 
+    const handlePress = () => {
+        router.push('/');
+    };
     return (
         <View style={styles.containerMain}>
+            <Pressable onPress={handlePress} style={styles.homeIco}>
+                <Ionicons name="home" size={24} color="white"/>
+            </Pressable>
+            <Text style={styles.title}>Word Hunt</Text>
             <View style={styles.container}>
                 {rows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.row}>
@@ -169,8 +184,19 @@ export default function GameScreen() {
                 ))}
             </View>
             <Pressable style={styles.button} onPress={checkWord}>
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-                    Check Answer {selectedWord}
+                <Text
+                    style={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: 20,
+                    }}
+                >
+                    Check Answer{" "}
+                    <FontAwesome
+                        name="check-square-o"
+                        size={20}
+                        color="black"
+                    />
                 </Text>
             </Pressable>
             <KeyboardLayout onKeyPressed={onKeyPressed} />
@@ -182,6 +208,16 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
     },
+    button: {
+        width: 200,
+        height: 50,
+        backgroundColor: "#50ad44",
+        alignItems: "center",
+        justifyContent: "center",
+        bottom: 60,
+        borderRadius: 8,
+        left: "20%",
+    },
     cell: {
         width: 50,
         height: 50,
@@ -191,22 +227,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        left: 20,
-    },
-    button: {
-        width: 200,
-        height: 50,
-        backgroundColor: "#50ad44",
-        alignItems: "center",
-        justifyContent: "center",
-        top: 40,
-        borderRadius: 8,
-        left: "20%",
+        bottom: 100,
     },
     cellText: {
         color: "white",
         fontSize: 25,
         fontWeight: "bold",
-        fontFamily:'Poppins'
+        fontFamily: "Poppins",
+    },
+    homeIco: {
+        bottom: 100,
+        left: 15,
+        zIndex:2,
+        position:'relative'
+    },
+    title: {
+        color: "white",
+        fontWeight: "bold",
+        bottom: "30%",
+        fontSize: 40,
+        fontFamily: "Poppins",
+        textAlign: "center",
     },
 });
