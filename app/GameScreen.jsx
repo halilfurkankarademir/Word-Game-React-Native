@@ -13,7 +13,6 @@ import KeyboardLayout from "../components/Keyboard";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Logo from "../assets/images/wh_logo_small.png"
 
 export default function GameScreen() {
@@ -151,7 +150,7 @@ export default function GameScreen() {
     return (
         <View style={styles.containerMain}>
             <Pressable onPress={handlePress} style={styles.homeIco}>
-                <Ionicons name="home" size={24} color="white"/>
+                <Ionicons name="arrow-back-circle-outline" size={32} color="white"/>
             </Pressable>
             <Image source={Logo} style={styles.logo} resizeMode="center"></Image>
             <View style={styles.container}>
