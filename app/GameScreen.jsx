@@ -24,12 +24,11 @@ export default function GameScreen() {
     const [currentRow, setCurrentRow] = useState(0);
     const [currentCol, setCurrentCol] = useState(0);
     const [length, setLength] = useState(0);
-    const [rightLetterLength,setRightLetterLength]= useState(0);
+    const [rightLetterLength, setRightLetterLength] = useState(0);
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
         const newColors = colors.map((row) => [...row]);
-
 
         if (key === "DEL") {
             if (currentCol > 0) {
@@ -55,18 +54,22 @@ export default function GameScreen() {
     };
 
     const checkWord = () => {
-
         const newColors = colors.map((row) => [...row]);
 
         for (let i = 0; i < letters.length; i++) {
-            if(letters[i]===word[i]){
-                newColors[currentRow][i] = "#50ad44";
-                setRightLetterLength(prev=>prev+1);
+            if (letters.includes(word[i])) {
+                newColors[currentRow][i] = "#bd8e04";
+            }
+
+            if (letters[i] === word[i]) {
+                newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it bg is green
+                setRightLetterLength((prev) => prev + 1);
             }
         }
-
+        setCurrentRow((prevRow) => prevRow + 1);
+        setCurrentCol(0);
+        setWord([]);
         setColors(newColors);
-
     };
 
     return (
@@ -75,7 +78,16 @@ export default function GameScreen() {
                 {rows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.row}>
                         {row.map((cell, cellIndex) => (
-                            <View key={cellIndex}  style={[styles.cell, { backgroundColor: colors[rowIndex][cellIndex] }]}>
+                            <View
+                                key={cellIndex}
+                                style={[
+                                    styles.cell,
+                                    {
+                                        backgroundColor:
+                                            colors[rowIndex][cellIndex],
+                                    },
+                                ]}
+                            >
                                 <Text style={styles.cellText}>
                                     {cell.toUpperCase()}
                                 </Text>
