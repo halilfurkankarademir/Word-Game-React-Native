@@ -9,10 +9,12 @@ import {
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
-import GameScreen from "./GameScreen";
 import Settings from "../components/Settings";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
 
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -81,6 +83,12 @@ export default function HomeScreen() {
                             <Text style={styles.text}>How to play?</Text>
                         </Pressable>
                     </Animated.View>
+                    <Text style={{fontFamily:'Poppins', top:'35%', color:'white'}}>Support developer.</Text>
+                    <View style={{flexDirection:'row', top:'60%'}}>
+                        <AntDesign name="instagram" size={20} color="white" style={{marginHorizontal:5}}/>
+                        <FontAwesome name="linkedin-square" size={20} color="white"  style={{marginHorizontal:5}}/>
+                        <AntDesign name="github" size={18} color="white" style={{marginHorizontal:5}}/>
+                    </View>
                 </ImageBackground>
             </>
         </View>

@@ -2,13 +2,19 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 
-export default function Settings({ hasWon }) {
-
+export default function Settings({ hasWon, word, score }) {
     const router = useRouter();
 
-    const redirectHome = () =>{
-        router.push('/HomeScreen');
-    }
+    const redirectHome = () => {
+        router.push("/HomeScreen");
+    };
+
+    
+    const newGame = () => {
+        router.push("/GameScreen");
+    };
+
+    
 
     return (
         <>
@@ -16,7 +22,8 @@ export default function Settings({ hasWon }) {
                 {hasWon && (
                     <>
                         <Text style={styles.title}>You Won!</Text>
-                        <Pressable style={styles.button}>
+                        <Text style={styles.text}>Your score: {score}</Text>
+                        <Pressable style={styles.button} onPress={newGame}>
                             <Text style={styles.text}>New Game</Text>
                         </Pressable>
                         <Pressable style={styles.button} onPress={redirectHome}>
@@ -26,8 +33,13 @@ export default function Settings({ hasWon }) {
                 )}
                 {!hasWon && (
                     <>
+                        
                         <Text style={styles.title}>You Lose :(</Text>
-                        <Pressable style={styles.button}>
+                        <Text style={styles.text}>Your score: {score}</Text>
+                        <Text style={styles.title}>
+                            Correct word is: {word}
+                        </Text>
+                        <Pressable style={styles.button} onPress={newGame}>
                             <Text style={styles.text}>Try Again</Text>
                         </Pressable>
                         <Pressable style={styles.button} onPress={redirectHome}>
@@ -35,7 +47,6 @@ export default function Settings({ hasWon }) {
                         </Pressable>
                     </>
                 )}
-                
             </View>
         </>
     );
@@ -51,19 +62,20 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         elevation: 1,
         width: 150,
-        marginVertical:20,
+        marginVertical: 20,
     },
     container: {
         backgroundColor: "#2c236c",
-        width: "80%",
-        height: "65%",
+        width: "100%",
+        height: "100%",
         position: "absolute",
         zIndex: 2,
         borderRadius: 8,
         paddingRight: 20,
         paddingLeft: 20,
-        alignItems:'center',
-        justifyContent:'center'
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex:20
     },
     closeIco: {
         alignSelf: "flex-end",

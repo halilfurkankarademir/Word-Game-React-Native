@@ -173,7 +173,7 @@ export default function GameScreen() {
             <View style={styles.containerMain}>
                 {
                     showGameOver && (
-                        <GameOver hasWon={hasWon}></GameOver>
+                        <GameOver hasWon={hasWon} word={selectedWord} score={gameScore}></GameOver>
                     )
                 }
                 
