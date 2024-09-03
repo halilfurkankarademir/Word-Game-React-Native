@@ -1,110 +1,22 @@
-import { StyleSheet, View, Pressable, Text, Image, ImageBackground, Animated } from "react-native";
-import { useState, useEffect, useRef } from "react";
-import GameScreen from "./GameScreen";
-import Settings from "../components/Settings";
-import Logo from "../assets/images/wh_logo_small.png";
-import Background from "../assets/images/background.png";
+import {
+    StyleSheet,
+    View,
+} from "react-native";
+import GameScreen from "./GameScreen"
+import HomeScreen from "./HomeScreen"
 
-export default function HomeScreen() {
-    const [hasClickedPlay, setHasClickedPlay] = useState(false);
-    const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
 
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-
-    useEffect(() => {
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(scaleAnim, {
-                    toValue: 1.05, 
-                    duration: 1500, 
-                    useNativeDriver: true,
-                }),
-                Animated.timing(scaleAnim, {
-                    toValue: 1, 
-                    duration: 1500, 
-                    useNativeDriver: true,
-                }),
-            ])
-        ).start();
-    }, [scaleAnim]);
-
+export default function App() {
+    
     return (
         <View style={styles.containerMain}>
-            {hasClickedPlay && <GameScreen />}
-            {!hasClickedPlay && (
-                <>
-                    <ImageBackground source={Background} style={styles.backgroundImage}>
-                        {isSettingsVisible && (
-                            <Settings 
-                                isVisible={isSettingsVisible} 
-                                handleClose={() => setIsSettingsVisible(false)} 
-                            />
-                        )}
-                        <Image source={Logo} style={styles.logo} resizeMode="center" />
-                        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                            <Pressable 
-                                style={styles.buttons} 
-                                onPress={() => setHasClickedPlay(true)}
-                            >
-                                <Text style={styles.text}>Play</Text>
-                            </Pressable>
-                       
-                        
-                            <Pressable 
-                                style={styles.buttons}  
-                                onPress={() => setIsSettingsVisible(true)} // Ayarlar menüsünü açmak için
-                            >
-                                <Text style={styles.text}>Settings</Text>
-                            </Pressable>
-
-                            <Pressable style={styles.buttons}>
-                                <Text style={styles.text}>How to play?</Text>
-                            </Pressable>
-                        </Animated.View>
-                    </ImageBackground>
-                </>
-            )}
+            <HomeScreen></HomeScreen>    
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    buttons: {
-        backgroundColor: '#0080ff',
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: '#ffffff',
-        paddingVertical: 6,
-        paddingHorizontal: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#e67a73',
-        shadowOffset: { width: 0, height: 39 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 1,
-        width: 150,
-        marginTop: 30,
-    },
     containerMain: {
         flex: 1,
-    },
-    backgroundImage: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        width: '100%',
-        height: '100%',
-    },
-    logo: {
-        width: 500,
-        position: 'absolute',
-        bottom: '20%',
-    },
-    text: {
-        color: 'white',
-        fontSize: 20,
-        textAlign: 'center',
-        fontFamily: 'PoppinsBold',
     },
 });

@@ -1,19 +1,28 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 
-export default function KeyboardLayout ({ onKeyPressed }) {
+export default function KeyboardLayout({ onKeyPressed, noKeys }) {
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
         ["z", "x", "c", "v", "b", "n", "m", "DEL"],
     ];
 
+    const getKeyStyle = (key) => {
+        const isKeyDisabled = noKeys.includes(key);
+        return isKeyDisabled ? styles.disabledKey : styles.key;
+    };
+
     return (
         <View style={styles.keyboard}>
             {keys.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.row}>
                     {row.map((key, keyIndex) => (
-                        <Pressable key={keyIndex} style={styles.key} onPress={()=>onKeyPressed(key)}>
+                        <Pressable
+                            key={keyIndex}
+                            style={[styles.key, getKeyStyle(key)]}
+                            onPress={() => onKeyPressed(key)}
+                        >
                             <Text style={styles.keyText}>{key.toLocaleUpperCase()}</Text>
                         </Pressable>
                     ))}
@@ -26,9 +35,9 @@ export default function KeyboardLayout ({ onKeyPressed }) {
 const styles = StyleSheet.create({
     keyboard: {
         top: 640,
-        right:0,
-        left:0,
-        position:'absolute'
+        right: 0,
+        left: 0,
+        position: 'absolute'
     },
     row: {
         flexDirection: "row",
@@ -45,6 +54,9 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         fontSize: 20,
-        fontFamily:'Poppins'
+        fontFamily: 'Poppins'
     },
+    disabledKey: {
+        backgroundColor: "#de353e",
+    }
 });

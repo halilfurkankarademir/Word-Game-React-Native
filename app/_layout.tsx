@@ -31,6 +31,7 @@ export default function RootLayout() {
       <Stack initialRouteName='HomeScreen'>
         <Stack.Screen name='index' options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='GameScreen' options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='HomeScreen' options={{headerShown:false}}></Stack.Screen>
       </Stack>
     </ThemeProvider>
   );

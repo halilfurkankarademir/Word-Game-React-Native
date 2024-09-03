@@ -3,8 +3,9 @@ import {
     View,
     Pressable,
     Text,
-    ActivityIndicator,
+    ImageBackground,
     Image,
+    BackHandler
 } from "react-native";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
@@ -13,21 +14,30 @@ import KeyboardLayout from "../components/Keyboard";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Logo from "../assets/images/wh_logo_small.png"
-
+import Logo from "../assets/images/wh_logo_small.png";
+import Background from "../assets/images/gamebg.png";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
-    const [loading, setLoading] = useState(true);
+    const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
+    const [gameScore, setGameScore] = useState(0);
 
     const router = useRouter();
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 3000);
+        const backAction = () => {
+            router.back(); 
+            return true;  
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+    
+        return () => backHandler.remove(); 
     }, []);
 
     useEffect(() => {
@@ -107,16 +117,22 @@ export default function GameScreen() {
     const checkWord = () => {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
+       
 
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
-                newColors[currentRow][i] = "#dea709"; // If word includes that letter make it's bg is yellow
+                newColors[currentRow][i] = "#dea709";
+                // If word includes that letter make it's bg is yellow
             } else {
-                newColors[currentRow][i] = "#919191"; // If word doesn't include letter make it's bg light gray
+                newColors[currentRow][i] = "#919191";
+                setNoKeys((prev) => [...prev, word[i]]);
+                // If word doesn't include letter make it's bg light gray and add no key array
             }
             if (letters[i] === word[i]) {
-                newColors[currentRow][i] = "#50ad44"; // If letter is on the right place make it's bg is green
+                newColors[currentRow][i] = "#50ad44";
                 correctLettersCount++;
+                setGameScore(score=>score+10);
+                // If letter is on the right place make it's bg is green
             }
         }
         setRightLetterLength(correctLettersCount);
@@ -126,85 +142,94 @@ export default function GameScreen() {
         setColors(newColors);
     };
 
-    useEffect(() => {
-        if (rightLetterLength === letters.length) {
-            alert("You won!");
-            setHasWon(true);
-            router.push('/HomeScreen');
+    const hasFinished = () =>{
+        if(currentRow===5){
+            alert('Bitti!');
         }
-    }, [rightLetterLength, letters.length]);
-
-    if (loading) {
-        return (
-            <View style={styles.containerMain}>
-                <ActivityIndicator size="large" color="#fff" />
-                <Text style={{ fontFamily: "Poppins", color: "white" }}>
-                    Loading...
-                </Text>
-            </View>
-        );
     }
+    useEffect(()=>{
+        hasFinished();
+    },[currentRow]);
+
+    // useEffect(() => {
+    //     if (rightLetterLength === letters.length) {
+    //         alert("You won!");
+    //         setHasWon(true);
+    //         router.push("/HomeScreen");
+    //     }
+    // }, [rightLetterLength, letters.length]);
 
     const handlePress = () => {
-        router.push('/');
+        router.push("/");
     };
     return (
-        <View style={styles.containerMain}>
-            <Pressable onPress={handlePress} style={styles.homeIco}>
-                <Ionicons name="arrow-back-circle-outline" size={32} color="white"/>
-            </Pressable>
-            <Image source={Logo} style={styles.logo} resizeMode="center"></Image>
-            <View style={styles.container}>
-                {rows.map((row, rowIndex) => (
-                    <View key={rowIndex} style={styles.row}>
-                        {row.map((cell, cellIndex) => (
-                            <View
-                                key={cellIndex}
-                                style={[
-                                    styles.cell,
-                                    {
-                                        backgroundColor:
-                                            colors[rowIndex][cellIndex],
-                                        borderColor:
-                                            rowIndex === currentRow &&
-                                            cellIndex === currentCol
-                                                ? "#969696"
-                                                : "transparent",
-                                        borderWidth:
-                                            rowIndex === currentRow &&
-                                            cellIndex === currentCol
-                                                ? 2
-                                                : 0,
-                                    },
-                                ]}
-                            >
-                                <Text style={styles.cellText}>
-                                    {cell.toUpperCase()}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                ))}
-            </View>
-            <Pressable style={styles.button} onPress={checkWord}>
-                <Text
-                    style={{
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        fontSize: 20,
-                        color:'white'
-                    }}
-                >
-                    Check Answer{" "}
-                    <FontAwesome
-                        name="check-square-o"
-                        size={18}
+        <ImageBackground source={Background} style={styles.backgroundImage}>
+            <View style={styles.containerMain}>
+                <Image
+                    source={Logo}
+                    style={styles.logo}
+                    resizeMode="center"
+                ></Image>
+                <Pressable onPress={handlePress} style={styles.homeIco}>
+                    <Ionicons
+                        name="arrow-back-circle-outline"
+                        size={32}
                         color="white"
                     />
-                </Text>
-            </Pressable>
-            <KeyboardLayout onKeyPressed={onKeyPressed} />
-        </View>
+                </Pressable>
+                <Text style={styles.score}>Score:{" "}{gameScore}</Text>
+                <View style={styles.container}>
+                    {rows.map((row, rowIndex) => (
+                        <View key={rowIndex} style={styles.row}>
+                            {row.map((cell, cellIndex) => (
+                                <View
+                                    key={cellIndex}
+                                    style={[
+                                        styles.cell,
+                                        {
+                                            backgroundColor:
+                                                colors[rowIndex][cellIndex],
+                                            borderColor:
+                                                rowIndex === currentRow &&
+                                                cellIndex === currentCol
+                                                    ? "#969696"
+                                                    : "transparent",
+                                            borderWidth:
+                                                rowIndex === currentRow &&
+                                                cellIndex === currentCol
+                                                    ? 2
+                                                    : 0,
+                                        },
+                                    ]}
+                                >
+                                    <Text style={styles.cellText}>
+                                        {cell.toUpperCase()}
+                                    </Text>
+                                </View>
+                            ))}
+                        </View>
+                    ))}
+                </View>
+                <Pressable style={styles.button} onPress={checkWord}>
+                    <Text
+                        style={{
+                            fontWeight: "bold",
+                            textAlign: "center",
+                            fontSize: 20,
+                            color: "white",
+                        }}
+                    >
+                        Check Answer{" "}
+                        <FontAwesome
+                            name="check-square-o"
+                            size={18}
+                            color="white"
+                        />
+                    </Text>
+                </Pressable>
+                <KeyboardLayout onKeyPressed={onKeyPressed} noKeys={noKeys} />
+            </View>
+        </ImageBackground>
     );
 }
 
@@ -212,22 +237,28 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
     },
-    
+    backgroundImage: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+    },
     button: {
-        backgroundColor: '#009f1a',
+        backgroundColor: "#009f1a",
         borderRadius: 4,
         borderWidth: 1,
-        borderColor: '#ffffff',
+        borderColor: "#ffffff",
         paddingVertical: 6,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#e67a73',
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#e67a73",
         shadowOffset: { width: 0, height: 39 },
         shadowOpacity: 1,
         shadowRadius: 0,
         elevation: 1,
-        width:200,
-        bottom:'2%'
+        width: 200,
+        bottom: "2%",
     },
     cell: {
         width: 50,
@@ -246,22 +277,30 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontFamily: "Poppins",
     },
-    containerMain:{
-        justifyContent:'center',
-        alignItems:'center',
-        flex:1
+    containerMain: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
     },
     homeIco: {
-        bottom:105,
-        right:140,
+        bottom: '5%',
+        right: 140,
     },
-    logo:{
-        width:100,
-        position:'absolute',
-        bottom:'-5%',
-        alignItems:'center',
-        justifyContent:'center',
-        textAlign:'center'
+    logo: {
+        width: 200,
+        position: "absolute",
+        bottom: "25%",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+    },
+    score:{
+        fontFamily: "Poppins",
+        fontSize:18,
+        color:'white',
+        bottom:65,
+        right:'3%',
+        alignSelf:'flex-end'
     },
     title: {
         color: "white",
@@ -271,4 +310,5 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins",
         textAlign: "center",
     },
+
 });
