@@ -16,10 +16,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
+import GameOver from "../components/GameOver";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
+    const [showGameOver,setShowGameOver] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
@@ -144,27 +146,37 @@ export default function GameScreen() {
 
     const hasFinished = () =>{
         if(currentRow===5){
-            alert('Bitti!');
+            setHasWon(false);
+            setShowGameOver(true);
         }
     }
     useEffect(()=>{
         hasFinished();
     },[currentRow]);
 
-    // useEffect(() => {
-    //     if (rightLetterLength === letters.length) {
-    //         alert("You won!");
-    //         setHasWon(true);
-    //         router.push("/HomeScreen");
-    //     }
-    // }, [rightLetterLength, letters.length]);
+    useEffect(() => {
+        if (rightLetterLength === letters.length) {
+            setHasWon(true);
+            setShowGameOver(true);
+        }
+    }, [rightLetterLength, letters.length]);
+
+
 
     const handlePress = () => {
         router.push("/");
     };
+
+
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>
+                {
+                    showGameOver && (
+                        <GameOver hasWon={hasWon}></GameOver>
+                    )
+                }
+                
                 <Image
                     source={Logo}
                     style={styles.logo}
@@ -219,7 +231,7 @@ export default function GameScreen() {
                             color: "white",
                         }}
                     >
-                        Check Answer{" "}
+                        {selectedWord}{" "}
                         <FontAwesome
                             name="check-square-o"
                             size={18}
