@@ -6,15 +6,16 @@ import {
     Image,
     ImageBackground,
     Animated,
+    Linking,
 } from "react-native";
+
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
 import Settings from "../components/Settings";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -23,15 +24,19 @@ export default function HomeScreen() {
 
     const router = useRouter();
 
-    const startGame = () =>{
+    const startGame = () => {
         router.push("/GameScreen");
-    }
+    };
+
+    const openLink = (url) => {
+        Linking.openURL(url);
+    };
 
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(scaleAnim, {
-                    toValue: 1.05,
+                    toValue: 1.1,
                     duration: 1500,
                     useNativeDriver: true,
                 }),
@@ -71,23 +76,69 @@ export default function HomeScreen() {
                         >
                             <Text style={styles.text}>Play</Text>
                         </Pressable>
-
-                        <Pressable
-                            style={styles.buttons}
-                            onPress={() => setIsSettingsVisible(true)}
-                        >
-                            <Text style={styles.text}>Settings</Text>
-                        </Pressable>
-
-                        <Pressable style={styles.buttons}>
-                            <Text style={styles.text}>How to play?</Text>
-                        </Pressable>
                     </Animated.View>
-                    <Text style={{fontFamily:'Poppins', top:'35%', color:'white'}}>Support developer.</Text>
-                    <View style={{flexDirection:'row', top:'60%'}}>
-                        <AntDesign name="instagram" size={20} color="white" style={{marginHorizontal:5}}/>
-                        <FontAwesome name="linkedin-square" size={20} color="white"  style={{marginHorizontal:5}}/>
-                        <AntDesign name="github" size={18} color="white" style={{marginHorizontal:5}}/>
+                    <Pressable
+                        style={styles.buttons}
+                        onPress={() => setIsSettingsVisible(true)}
+                    >
+                        <Text style={styles.text}>Settings</Text>
+                    </Pressable>
+
+                    <Pressable style={styles.buttons}>
+                        <Text style={styles.text}>How to play?</Text>
+                    </Pressable>
+                    <Text
+                        style={{
+                            fontFamily: "Poppins",
+                            top: "35%",
+                            color: "white",
+                        }}
+                    >
+                        Support developer.
+                    </Text>
+                    <View style={{ flexDirection: "row", top: "60%" }}>
+                        <Pressable
+                            onPress={() =>
+                                openLink(
+                                    "https://www.instagram.com/halilfurkankarademir/"
+                                )
+                            }
+                        >
+                            <AntDesign
+                                name="instagram"
+                                size={20}
+                                color="white"
+                                style={{ marginHorizontal: 5 }}
+                            />
+                        </Pressable>
+                        <Pressable
+                            onPress={() =>
+                                openLink(
+                                    "https://www.linkedin.com/in/halilfurkankarademir/"
+                                )
+                            }
+                        >
+                            <FontAwesome
+                                name="linkedin-square"
+                                size={20}
+                                color="white"
+                                style={{ marginHorizontal: 5 }}
+                            />
+                        </Pressable>
+                        <Pressable
+                            onPress={() =>
+                                openLink(
+                                    "https://github.com/halilfurkankarademir"
+                                )
+                            }
+                        >
+                            <AntDesign
+                                name="github"
+                                size={18}
+                                color="white"
+                                style={{ marginHorizontal: 5 }}
+                            />
+                        </Pressable>
                     </View>
                 </ImageBackground>
             </>
@@ -112,6 +163,7 @@ const styles = StyleSheet.create({
         elevation: 1,
         width: 150,
         marginTop: 30,
+        
     },
     containerMain: {
         flex: 1,
@@ -126,7 +178,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 500,
         position: "absolute",
-        bottom: "15%",
+        bottom: "20%",
     },
     text: {
         color: "white",

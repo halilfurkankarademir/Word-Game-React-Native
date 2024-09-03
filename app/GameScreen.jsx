@@ -5,8 +5,9 @@ import {
     Text,
     ImageBackground,
     Image,
-    BackHandler
+    BackHandler,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import WordsJson from "../assets/words.json";
 import React from "react";
@@ -16,12 +17,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
-import GameOver from "../components/GameOver";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
-    const [showGameOver,setShowGameOver] = useState(false);
+    const [showGameOver, setShowGameOver] = useState(false);
+    const [showYouWon, setShowYouWon] = useState(false);
     const [wordsData, setWordsData] = useState(WordsJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
@@ -119,7 +120,6 @@ export default function GameScreen() {
     const checkWord = () => {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
-       
 
         for (let i = 0; i < letters.length; i++) {
             if (letters.includes(word[i])) {
@@ -133,7 +133,7 @@ export default function GameScreen() {
             if (letters[i] === word[i]) {
                 newColors[currentRow][i] = "#50ad44";
                 correctLettersCount++;
-                setGameScore(score=>score+10);
+                setGameScore(score => score + 10);
                 // If letter is on the right place make it's bg is green
             }
         }
@@ -142,41 +142,61 @@ export default function GameScreen() {
         setCurrentCol(0);
         setWord([]);
         setColors(newColors);
+
+        // Skoru AsyncStorage'a kaydetme
+        _storeData(correctLettersCount === letters.length ? gameScore + 10 : gameScore);
     };
 
     const hasFinished = () =>{
-        if(currentRow===5){
+        //Lose situation
+        if(currentRow === 5){
             setHasWon(false);
             setShowGameOver(true);
         }
     }
+
     useEffect(()=>{
         hasFinished();
     },[currentRow]);
 
     useEffect(() => {
+        //Won situation
         if (rightLetterLength === letters.length) {
             setHasWon(true);
-            setShowGameOver(true);
+            setShowYouWon(true);
         }
     }, [rightLetterLength, letters.length]);
 
+    useEffect(()=>{
+        if(showGameOver){
+            router.push('/GameOver');
+        }
+        if(showYouWon){
+            router.push('/YouWon');
+        }
+    },[showGameOver, showYouWon]);
 
+    useEffect(() => {
+        if (showGameOver || showYouWon) {
+            _storeData(gameScore);
+        }
+    }, [showGameOver, showYouWon, gameScore]);
 
     const handlePress = () => {
         router.push("/");
     };
 
+    const _storeData = async (score) => {
+        try {
+          await AsyncStorage.setItem('score', score.toString());
+        } catch (error) {
+          console.error('Error saving score:', error);
+        }
+      };
 
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
-            <View style={styles.containerMain}>
-                {
-                    showGameOver && (
-                        <GameOver hasWon={hasWon} word={selectedWord} score={gameScore}></GameOver>
-                    )
-                }
-                
+            <View style={styles.containerMain}>    
                 <Image
                     source={Logo}
                     style={styles.logo}
@@ -322,5 +342,4 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins",
         textAlign: "center",
     },
-
 });
