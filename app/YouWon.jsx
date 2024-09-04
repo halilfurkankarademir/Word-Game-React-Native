@@ -25,8 +25,8 @@ export default function YouWon({}) {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(scaleAnim, {
-                    toValue: 1.05,
-                    duration: 1500,
+                    toValue: 1.1,
+                    duration: 1000,
                     useNativeDriver: true,
                 }),
                 Animated.timing(scaleAnim, {
@@ -71,7 +71,7 @@ export default function YouWon({}) {
                     resizeMode="contain"
                 ></Image>
                 <Text style={styles.title}>You Won !</Text>
-                <Text style={styles.text}>Your score: {score}</Text>
+                <Text style={styles.text}>Score: {score}</Text>
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                     <Pressable style={styles.button} onPress={newGame}>
                         <Text style={styles.text}>New Game</Text>

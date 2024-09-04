@@ -27,70 +27,32 @@ export default function GameScreen() {
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
 
-    const router = useRouter();
-
-    useEffect(() => {
-        const backAction = () => {
-            router.back(); 
-            return true;  
-        };
-    
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
-    
-        return () => backHandler.remove(); 
-    }, []);
-
-    useEffect(() => {
-        //Update layout for each random word
-        if (selectedWord) {
-            const letters = selectedWord.split("");
-            setRows(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("")
-                )
-            );
-            setColors(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("#4a4a4a")
-                )
-            );
-        }
-    }, [selectedWord]);
-
-    function getRandomNumber(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    const randomWord = () => {
-        const randomIndex = getRandomNumber(0, wordsData.length - 1);
-        setSelectedWord(wordsData[randomIndex]); //Select random word from words data
-    };
-
-    const letters = selectedWord.split("");
     const [rows, setRows] = useState(
-        //Create rows up to the letters length
-        Array.from({ length: letters.length }, () =>
-            new Array(letters.length).fill("")
-        )
+        // Create rows up to the letters length
+        Array.from({ length: 0 }, () => new Array(0).fill(""))
     );
 
-    useEffect(() => {
-        randomWord();
-    }, []);
-
     const [colors, setColors] = useState(
-        Array.from({ length: letters.length }, () =>
-            new Array(letters.length).fill("#4a4a4a")
-        )
+        Array.from({ length: 0 }, () => new Array(0).fill("#4a4a4a"))
     );
 
     const [word, setWord] = useState([]);
     const [currentRow, setCurrentRow] = useState(0);
     const [currentCol, setCurrentCol] = useState(0);
     const [rightLetterLength, setRightLetterLength] = useState("");
+
+    // Router
+    const router = useRouter();
+
+    // Functions
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const randomWord = () => {
+        const randomIndex = getRandomNumber(0, wordsData.length - 1);
+        setSelectedWord(wordsData[randomIndex]);
+    };
 
     const onKeyPressed = (key) => {
         const newRows = rows.map((row) => [...row]);
@@ -106,9 +68,9 @@ export default function GameScreen() {
                 setCurrentCol(prevCol);
             }
         } else {
-            if (currentCol < letters.length) {
+            if (currentCol < selectedWord.length) {
                 newRows[currentRow][currentCol] = key;
-                setWord((prev) => [...prev, key]); // Add selected key to word array
+                setWord((prev) => [...prev, key]);
                 setRows(newRows);
                 setCurrentCol(currentCol + 1);
             }
@@ -121,20 +83,17 @@ export default function GameScreen() {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
 
-        for (let i = 0; i < letters.length; i++) {
-            if (letters.includes(word[i])) {
+        for (let i = 0; i < selectedWord.length; i++) {
+            if (selectedWord.includes(word[i])) {
                 newColors[currentRow][i] = "#dea709";
-                // If word includes that letter make it's bg is yellow
             } else {
                 newColors[currentRow][i] = "#919191";
                 setNoKeys((prev) => [...prev, word[i]]);
-                // If word doesn't include letter make it's bg light gray and add no key array
             }
-            if (letters[i] === word[i]) {
+            if (selectedWord[i] === word[i]) {
                 newColors[currentRow][i] = "#50ad44";
                 correctLettersCount++;
-                setGameScore(score => score + 10);
-                // If letter is on the right place make it's bg is green
+                setGameScore((score) => score + 10);
             }
         }
         setRightLetterLength(correctLettersCount);
@@ -143,44 +102,19 @@ export default function GameScreen() {
         setWord([]);
         setColors(newColors);
 
-        // Skoru AsyncStorage'a kaydetme
-        _storeData(correctLettersCount === letters.length ? gameScore + 10 : gameScore);
+        _storeData(
+            correctLettersCount === selectedWord.length
+                ? gameScore + 10
+                : gameScore
+        );
     };
 
-    const hasFinished = () =>{
-        //Lose situation
-        if(currentRow === 5){
+    const hasFinished = () => {
+        if (currentRow === 5) {
             setHasWon(false);
             setShowGameOver(true);
         }
-    }
-
-    useEffect(()=>{
-        hasFinished();
-    },[currentRow]);
-
-    useEffect(() => {
-        //Won situation
-        if (rightLetterLength === letters.length) {
-            setHasWon(true);
-            setShowYouWon(true);
-        }
-    }, [rightLetterLength, letters.length]);
-
-    useEffect(()=>{
-        if(showGameOver){
-            router.push('/GameOver');
-        }
-        if(showYouWon){
-            router.push('/YouWon');
-        }
-    },[showGameOver, showYouWon]);
-
-    useEffect(() => {
-        if (showGameOver || showYouWon) {
-            _storeData(gameScore);
-        }
-    }, [showGameOver, showYouWon, gameScore]);
+    };
 
     const handlePress = () => {
         router.push("/");
@@ -188,15 +122,76 @@ export default function GameScreen() {
 
     const _storeData = async (score) => {
         try {
-          await AsyncStorage.setItem('score', score.toString());
+            await AsyncStorage.setItem("score", score.toString());
         } catch (error) {
-          console.error('Error saving score:', error);
+            console.error("Error saving score:", error);
         }
-      };
+    };
+
+    // useEffect hooks
+    useEffect(() => {
+        const backAction = () => {
+            router.push('/HomeScreen');
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    useEffect(() => {
+        if (selectedWord) {
+            const letters = selectedWord.split("");
+            setRows(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("")
+                )
+            );
+            setColors(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("#4a4a4a")
+                )
+            );
+        }
+    }, [selectedWord]);
+
+    useEffect(() => {
+        randomWord();
+    }, []);
+
+    useEffect(() => {
+        hasFinished();
+    }, [currentRow]);
+
+    useEffect(() => {
+        if (rightLetterLength === selectedWord.length) {
+            setHasWon(true);
+            setShowYouWon(true);
+        }
+    }, [rightLetterLength, selectedWord.length]);
+
+    useEffect(() => {
+        if (showGameOver) {
+            router.push("/GameOver");
+        }
+        if (showYouWon) {
+            router.push("/YouWon");
+        }
+    }, [showGameOver, showYouWon]);
+
+    useEffect(() => {
+        if (showGameOver || showYouWon) {
+            _storeData(gameScore);
+        }
+    }, [showGameOver, showYouWon, gameScore]);
 
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
-            <View style={styles.containerMain}>    
+            <View style={styles.containerMain}>
                 <Image
                     source={Logo}
                     style={styles.logo}
@@ -209,7 +204,7 @@ export default function GameScreen() {
                         color="white"
                     />
                 </Pressable>
-                <Text style={styles.score}>Score:{" "}{gameScore}</Text>
+                <Text style={styles.score}>Score: {gameScore}</Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
@@ -315,7 +310,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     homeIco: {
-        bottom: '5%',
+        bottom: "5%",
         right: 140,
     },
     logo: {
@@ -326,13 +321,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
     },
-    score:{
+    score: {
         fontFamily: "Poppins",
-        fontSize:18,
-        color:'white',
-        bottom:65,
-        right:'3%',
-        alignSelf:'flex-end'
+        fontSize: 18,
+        color: "white",
+        bottom: 65,
+        right: "3%",
+        alignSelf: "flex-end",
     },
     title: {
         color: "white",
