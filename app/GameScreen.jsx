@@ -194,6 +194,8 @@ export default function GameScreen() {
         }
     }, [showGameOver, showYouWon, gameScore]);
 
+    console.warn(selectedWord)
+
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>

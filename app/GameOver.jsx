@@ -10,12 +10,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Background from "../assets/images/lostbg.png";
+import { Audio } from "expo-av"; 
 
 export default function GameOver({}) {
     const router = useRouter();
 
     const [word, setWord] = useState("");
     const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    const [sound, setSound] = useState(null);
 
     useEffect(() => {
         const _retrieveData = async () => {
@@ -47,6 +50,26 @@ export default function GameOver({}) {
         ).start();
     }, [scaleAnim]);
 
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require('../assets/fail.mp3') 
+            );
+            setSound(sound);
+            await sound.playAsync(); 
+        };
+
+        loadSound();
+
+        return () => {
+            if (sound) {
+                sound.stopAsync();
+                sound.unloadAsync();
+            }
+        };
+    }, []);
+
+
     const redirectHome = () => {
         router.push("/HomeScreen");
     };
@@ -55,6 +78,7 @@ export default function GameOver({}) {
         router.push("/GameScreen");
     };
 
+    
     return (
         <>
             <ImageBackground source={Background} style={styles.backgroundImage}>

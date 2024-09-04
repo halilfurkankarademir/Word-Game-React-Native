@@ -15,12 +15,13 @@ import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Audio } from "expo-av"; // Import the audio module
+import { Audio } from "expo-av"; 
 
 
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
     const [sound, setSound] = useState(null);
+    const [volume, setVolume] = useState(0.1);
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -34,27 +35,28 @@ export default function HomeScreen() {
         Linking.openURL(url);
     };
 
-    // useEffect(() => {
-    //     // Load and play background music
-    //     const loadSound = async () => {
-    //         const { sound } = await Audio.Sound.createAsync(
-    //             require('../assets/music.mp3') // Path to your sound file
-    //         );
-    //         setSound(sound);
-    //         await sound.playAsync();
-    //         sound.setIsLoopingAsync(true); // Loop the sound
-    //     };
+    useEffect(() => {
+        // Load and play background music
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require('../assets/music.mp3') // Path to your sound file
+            );
+            setSound(sound);
+            await sound.playAsync();
+            sound.setIsLoopingAsync(true); // Loop the sound
+            sound.setVolumeAsync(volume);
+        };
 
-    //     loadSound();
+        loadSound();
 
-    //     return () => {
-    //         // Cleanup the sound when the component unmounts
-    //         if (sound) {
-    //             sound.stopAsync();
-    //             sound.unloadAsync();
-    //         }
-    //     };
-    // }, []);
+        return () => {
+            // Cleanup the sound when the component unmounts
+            if (sound) {
+                sound.stopAsync();
+                sound.unloadAsync();
+            }
+        };
+    }, []);
 
     useEffect(() => {
         Animated.loop(

@@ -13,13 +13,15 @@ import { useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 import Background from "../assets/images/wonbg.png";
 import Cup from "../assets/images/cup.png";
+import { Audio } from "expo-av"; 
 
 export default function YouWon({}) {
     const router = useRouter();
-
+    
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const cupAnim = useRef(new Animated.Value(0)).current;
 
+    const [sound, setSound] = useState(null);
     useEffect(() => {
         // Scale animation for button
         Animated.loop(
@@ -54,6 +56,25 @@ export default function YouWon({}) {
         ).start();
     }, [scaleAnim, cupAnim]);
 
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require('../assets/won.mp3') 
+            );
+            setSound(sound);
+            await sound.playAsync(); 
+        };
+
+        loadSound();
+
+        return () => {
+            if (sound) {
+                sound.stopAsync();
+                sound.unloadAsync();
+            }
+        };
+    }, []);
+
     const redirectHome = () => {
         router.push("/HomeScreen");
     };
@@ -82,7 +103,7 @@ export default function YouWon({}) {
                     <Text style={styles.text}>Home Page</Text>
                 </Pressable>
                 <ConfettiCannon
-                    count={150}
+                    count={50}
                     origin={{ x: -10, y: 0 }}
                     fadeOut={true}
                 />
@@ -111,7 +132,6 @@ const styles = StyleSheet.create({
         elevation: 1,
         width: 150,
         marginVertical: 15,
-        top:'5%'
     },
     cup: {
         width: 150,
