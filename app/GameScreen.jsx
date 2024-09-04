@@ -1,4 +1,5 @@
 import {
+    Animated,
     StyleSheet,
     View,
     Pressable,
@@ -17,7 +18,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -43,14 +44,14 @@ export default function GameScreen() {
     const [currentCol, setCurrentCol] = useState(0);
     const [rightLetterLength, setRightLetterLength] = useState("");
 
+    const [animatedColors, setAnimatedColors] = useState(
+        Array.from({ length: 5 }, () =>
+            Array.from({ length: 5 }, () => new Animated.Value(0)) // Animated value for opacity
+        )
+    );
+
     // Router
     const router = useRouter();
-
-    const animatedCellStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ scale: withTiming(1.1, { duration: 200 }) }],
-        };
-    });
 
     // Functions
     function getRandomNumber(min, max) {
@@ -60,6 +61,14 @@ export default function GameScreen() {
     const randomWord = () => {
         const randomIndex = getRandomNumber(0, wordsData.length - 1);
         setSelectedWord(wordsData[randomIndex]);
+    };
+
+    const animateCell = (rowIndex, cellIndex, newColor) => {
+        Animated.timing(animatedColors[rowIndex][cellIndex], {
+            toValue: 1,
+            duration: 300, // Duration of the fade-in effect
+            useNativeDriver: false,
+        }).start();
     };
 
     const onKeyPressed = (key) => {
@@ -98,11 +107,14 @@ export default function GameScreen() {
                 newColors[currentRow][i] = "#50ad44"; // Correct letter
                 correctLettersCount++;
                 setGameScore((score) => score + 10);
+                animateCell(currentRow, i, "#50ad44");
             } else if (selectedWord.includes(word[i])) {
                 newColors[currentRow][i] = "#dea709"; // Correct letter wrong place
+                animateCell(currentRow, i, "#dea709");
             } else {
                 newColors[currentRow][i] = "#919191"; // Wrong letter
                 setNoKeys((prev) => [...prev, word[i]]);
+                animateCell(currentRow, i, "#919191");
             }
         }
     
@@ -118,7 +130,6 @@ export default function GameScreen() {
                 : gameScore
         );
     };
-    
 
     const hasFinished = () => {
         if (currentRow === 5) {
@@ -168,6 +179,11 @@ export default function GameScreen() {
                     new Array(letters.length).fill("#4a4a4a")
                 )
             );
+            setAnimatedColors(
+                Array.from({ length: letters.length }, () =>
+                    Array.from({ length: letters.length }, () => new Animated.Value(0))
+                )
+            );
         }
     }, [selectedWord]);
 
@@ -201,8 +217,6 @@ export default function GameScreen() {
         }
     }, [showGameOver, showYouWon, gameScore]);
 
-    console.warn(selectedWord)
-
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>
@@ -220,21 +234,23 @@ export default function GameScreen() {
                         <View key={rowIndex} style={styles.row}>
                             {row.map((cell, cellIndex) => (
                                 <Animated.View 
-                                key={cellIndex}
-                                style={[
-                                    styles.cell,
-                                    animatedCellStyle, 
-                                    {
-                                        backgroundColor: colors[rowIndex][cellIndex],
-                                        borderColor: rowIndex === currentRow && cellIndex === currentCol ? "#969696" : "transparent",
-                                        borderWidth: rowIndex === currentRow && cellIndex === currentCol ? 2 : 0,
-                                    },
-                                ]}
-                            >
-                                <Text style={styles.cellText}>
-                                    {cell.toUpperCase()}
-                                </Text>
-                            </Animated.View>
+                                    key={cellIndex}
+                                    style={[
+                                        styles.cell,
+                                        {
+                                            backgroundColor: animatedColors[rowIndex][cellIndex].interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: ["#4a4a4a", colors[rowIndex][cellIndex]],
+                                            }),
+                                            borderColor: rowIndex === currentRow && cellIndex === currentCol ? "#969696" : "transparent",
+                                            borderWidth: rowIndex === currentRow && cellIndex === currentCol ? 2 : 0,
+                                        },
+                                    ]}
+                                >
+                                    <Text style={styles.cellText}>
+                                        {cell.toUpperCase()}
+                                    </Text>
+                                </Animated.View>
                             ))}
                         </View>
                     ))}
@@ -264,9 +280,9 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: "#333",
         borderRadius: 5,
-        zIndex:10,
-        top:'15.2%',
-        right:'42%'
+        zIndex: 10,
+        top: '15.2%',
+        right: '42%',
     },
     cell: {
         width: 50,
@@ -303,7 +319,7 @@ const styles = StyleSheet.create({
         fontFamily: "Fun",
         fontSize: 24,
         color: "white",
-        bottom:'3%',
+        bottom: '3%',
         right: "3%",
         alignSelf: "flex-end",
     },
