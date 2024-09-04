@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { Audio } from "expo-av"; 
 import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
@@ -28,6 +29,8 @@ export default function GameScreen() {
     const [wordsData, setWordsData] = useState(WordsJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
+    const [buttonSound,setButtonSound] = useState();
+    const [revealSound,setRevealSound] = useState();
 
     const [rows, setRows] = useState(
         Array.from({ length: 0 }, () => new Array(0).fill(""))
@@ -50,6 +53,17 @@ export default function GameScreen() {
         )
     );
 
+    const playButtonSound = async () => {
+        if (buttonSound) {
+            await buttonSound.replayAsync();  // Play the button sound
+        }
+    };
+    const playRevealSound = async () => {
+        if (revealSound) {
+            await revealSound.replayAsync();  // Play the button sound
+        }
+    };
+
     // Router
     const router = useRouter();
 
@@ -66,14 +80,15 @@ export default function GameScreen() {
     const animateCell = (rowIndex, cellIndex, newColor) => {
         Animated.timing(animatedColors[rowIndex][cellIndex], {
             toValue: 1,
-            duration: 300, // Duration of the fade-in effect
+            duration: 500, // Duration of the fade-in effect
             useNativeDriver: false,
         }).start();
     };
 
-    const onKeyPressed = (key) => {
+    const onKeyPressed = async (key) => {
         const newRows = rows.map((row) => [...row]);
         const newColors = colors.map((row) => [...row]);
+        await playButtonSound();
 
         if (key === "check") {
             checkWord();
@@ -98,10 +113,12 @@ export default function GameScreen() {
         setColors(newColors);
     };
 
-    const checkWord = () => {
+    const checkWord = async () => {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
-    
+
+        await playRevealSound();
+
         for (let i = 0; i < selectedWord.length; i++) {
             if (word[i] === selectedWord[i]) {
                 newColors[currentRow][i] = "#50ad44"; // Correct letter
@@ -167,6 +184,40 @@ export default function GameScreen() {
     }, []);
 
     useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/keyboard.mp3")  
+            );
+            setButtonSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (buttonSound) {
+                buttonSound.unloadAsync();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/reveal.mp3")  
+            );
+            setRevealSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (revealSound) {
+                buttonSound.unloadAsync();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         if (selectedWord) {
             const letters = selectedWord.split("");
             setRows(
@@ -222,11 +273,7 @@ export default function GameScreen() {
             <View style={styles.containerMain}>
                 <Image source={Logo} style={styles.logo} resizeMode="center" />
                 <Pressable onPress={handlePress} style={styles.homeIco}>
-                    <Ionicons
-                        name="arrow-back-circle-outline"
-                        size={24}
-                        color="white"
-                    />
+                    <Text style={styles.back}>Go Back</Text>
                 </Pressable>
                 <Text style={styles.score}>Score: {gameScore}</Text>
                 <View style={styles.container}>
@@ -268,6 +315,13 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
     },
+    back:{
+        fontFamily:'Fun',
+        color:'white',
+        fontSize:24,
+        left:'5%',
+        top:5
+    },    
     backgroundImage: {
         flex: 1,
         justifyContent: "center",
@@ -310,7 +364,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 250,
         position: "absolute",
-        bottom: "25%",
+        bottom: "22%",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
