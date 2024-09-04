@@ -8,7 +8,6 @@ import {
     Animated,
     Linking,
 } from "react-native";
-
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
 import Settings from "../components/Settings";
@@ -16,7 +15,7 @@ import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Audio } from 'expo-av'; // Import the audio module
+import { Audio } from "expo-av"; // Import the audio module
 
 
 export default function HomeScreen() {
@@ -45,7 +44,7 @@ export default function HomeScreen() {
     //         await sound.playAsync();
     //         sound.setIsLoopingAsync(true); // Loop the sound
     //     };
-        
+
     //     loadSound();
 
     //     return () => {
@@ -117,7 +116,7 @@ export default function HomeScreen() {
                             fontFamily: "Fun",
                             top: "35%",
                             color: "white",
-                            fontSize:18,
+                            fontSize: 18,
                         }}
                     >
                         Support developer
@@ -173,9 +172,8 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-
     buttons: {
-        flexDirection:'row',
+        flexDirection: "row",
         backgroundColor: "#0080ff",
         borderRadius: 4,
         borderWidth: 1,
@@ -191,7 +189,6 @@ const styles = StyleSheet.create({
         elevation: 1,
         width: 200,
         marginTop: 30,
-        
     },
     containerMain: {
         flex: 1,
@@ -213,6 +210,5 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textAlign: "center",
         fontFamily: "Fun",
-
     },
 });

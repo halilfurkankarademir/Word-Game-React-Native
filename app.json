@@ -27,7 +27,15 @@
       "favicon": "./assets/images/wh_logo_small.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-build-properties",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-2234626467432384~9208473542", 
+          "iosAppId": "ca-app-pub-XXXXXXXXXXXX~XXXXXXXXXX" 
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
