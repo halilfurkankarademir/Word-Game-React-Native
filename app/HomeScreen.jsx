@@ -16,9 +16,11 @@ import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Audio } from 'expo-av'; // Import the audio module
 
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+    const [sound, setSound] = useState(null);
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -31,6 +33,28 @@ export default function HomeScreen() {
     const openLink = (url) => {
         Linking.openURL(url);
     };
+
+    useEffect(() => {
+        // Load and play background music
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require('../assets/music.mp3') // Path to your sound file
+            );
+            setSound(sound);
+            await sound.playAsync();
+            sound.setIsLoopingAsync(true); // Loop the sound
+        };
+        
+        loadSound();
+
+        return () => {
+            // Cleanup the sound when the component unmounts
+            if (sound) {
+                sound.stopAsync();
+                sound.unloadAsync();
+            }
+        };
+    }, []);
 
     useEffect(() => {
         Animated.loop(
