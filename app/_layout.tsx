@@ -13,7 +13,8 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
-    PoppinsBold : require('../assets/fonts/Poppins-Bold.ttf')
+    PoppinsBold : require('../assets/fonts/Poppins-Bold.ttf'),
+    Fun : require('../assets/fonts/Fun.ttf')
   });
 
   useEffect(() => {

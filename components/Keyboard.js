@@ -1,16 +1,29 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable,Text } from "react-native";
 import React from "react";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function KeyboardLayout({ onKeyPressed, noKeys }) {
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-        ["z", "x", "c", "v", "b", "n", "m", "DEL"],
+        ["   ",
+            "z", "x", "c", "v", "b", "n", "m",
+            { type: 'backspace', icon: <FontAwesome5 name="backspace" size={24} color="white" /> }
+        ],
     ];
 
     const getKeyStyle = (key) => {
         const isKeyDisabled = noKeys.includes(key);
         return isKeyDisabled ? styles.disabledKey : styles.key;
+    };
+
+    const handlePress = (key) => {
+        if (typeof key === 'object') {
+            onKeyPressed(key.type);
+        } else {
+            onKeyPressed(key);
+        }
     };
 
     return (
@@ -21,9 +34,9 @@ export default function KeyboardLayout({ onKeyPressed, noKeys }) {
                         <Pressable
                             key={keyIndex}
                             style={[styles.key, getKeyStyle(key)]}
-                            onPress={() => onKeyPressed(key)}
+                            onPress={() => handlePress(key)}
                         >
-                            <Text style={styles.keyText}>{key.toLocaleUpperCase()}</Text>
+                            {typeof key === 'object' ? key.icon : <Text style={styles.keyText}>{key.toLocaleUpperCase()}</Text>}
                         </Pressable>
                     ))}
                 </View>
@@ -34,7 +47,7 @@ export default function KeyboardLayout({ onKeyPressed, noKeys }) {
 
 const styles = StyleSheet.create({
     keyboard: {
-        top: 640,
+        top: 600,
         right: 0,
         left: 0,
         position: 'absolute'
@@ -54,7 +67,7 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         fontSize: 20,
-        fontFamily: 'Poppins'
+        fontFamily: 'Fun'
     },
     disabledKey: {
         backgroundColor: "#de353e",

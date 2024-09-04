@@ -28,12 +28,13 @@ export default function GameScreen() {
     const [gameScore, setGameScore] = useState(0);
 
     const [rows, setRows] = useState(
-        // Create rows up to the letters length
         Array.from({ length: 0 }, () => new Array(0).fill(""))
     );
 
     const [colors, setColors] = useState(
-        Array.from({ length: 0 }, () => new Array(0).fill("#4a4a4a"))
+        Array.from({ length: 5 }, () =>
+            Array.from({ length: 5 }, () => "#ff65ff")
+        )
     );
 
     const [word, setWord] = useState([]);
@@ -58,7 +59,9 @@ export default function GameScreen() {
         const newRows = rows.map((row) => [...row]);
         const newColors = colors.map((row) => [...row]);
 
-        if (key === "DEL") {
+        if (key === "check") {
+            checkWord();
+        } else if (key === "backspace") {
             if (currentCol > 0) {
                 const prevCol = currentCol - 1;
                 newRows[currentRow][prevCol] = "";
@@ -82,32 +85,33 @@ export default function GameScreen() {
     const checkWord = () => {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
-
+    
         for (let i = 0; i < selectedWord.length; i++) {
-            if (selectedWord.includes(word[i])) {
-                newColors[currentRow][i] = "#dea709";
-            } else {
-                newColors[currentRow][i] = "#919191";
-                setNoKeys((prev) => [...prev, word[i]]);
-            }
-            if (selectedWord[i] === word[i]) {
-                newColors[currentRow][i] = "#50ad44";
+            if (word[i] === selectedWord[i]) {
+                newColors[currentRow][i] = "#50ad44"; // Correct letter
                 correctLettersCount++;
                 setGameScore((score) => score + 10);
+            } else if (selectedWord.includes(word[i])) {
+                newColors[currentRow][i] = "#dea709"; // Correct letter wrong place
+            } else {
+                newColors[currentRow][i] = "#919191"; // Wrong letter
+                setNoKeys((prev) => [...prev, word[i]]);
             }
         }
+    
         setRightLetterLength(correctLettersCount);
         setCurrentRow((prevRow) => prevRow + 1);
         setCurrentCol(0);
         setWord([]);
         setColors(newColors);
-
+    
         _storeData(
             correctLettersCount === selectedWord.length
                 ? gameScore + 10
                 : gameScore
         );
     };
+    
 
     const hasFinished = () => {
         if (currentRow === 5) {
@@ -123,6 +127,7 @@ export default function GameScreen() {
     const _storeData = async (score) => {
         try {
             await AsyncStorage.setItem("score", score.toString());
+            await AsyncStorage.setItem("word", selectedWord.toString());
         } catch (error) {
             console.error("Error saving score:", error);
         }
@@ -131,7 +136,7 @@ export default function GameScreen() {
     // useEffect hooks
     useEffect(() => {
         const backAction = () => {
-            router.push('/HomeScreen');
+            router.push("/HomeScreen");
             return true;
         };
 
@@ -192,15 +197,11 @@ export default function GameScreen() {
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>
-                <Image
-                    source={Logo}
-                    style={styles.logo}
-                    resizeMode="center"
-                ></Image>
+                <Image source={Logo} style={styles.logo} resizeMode="center" />
                 <Pressable onPress={handlePress} style={styles.homeIco}>
                     <Ionicons
                         name="arrow-back-circle-outline"
-                        size={32}
+                        size={24}
                         color="white"
                     />
                 </Pressable>
@@ -237,22 +238,8 @@ export default function GameScreen() {
                         </View>
                     ))}
                 </View>
-                <Pressable style={styles.button} onPress={checkWord}>
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            textAlign: "center",
-                            fontSize: 20,
-                            color: "white",
-                        }}
-                    >
-                        {selectedWord}{" "}
-                        <FontAwesome
-                            name="check-square-o"
-                            size={18}
-                            color="white"
-                        />
-                    </Text>
+                <Pressable style={styles.button} onPress={()=>checkWord()}>
+                    <FontAwesome name="check-square-o" size={24} color="white" />
                 </Pressable>
                 <KeyboardLayout onKeyPressed={onKeyPressed} noKeys={noKeys} />
             </View>
@@ -272,37 +259,28 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     button: {
-        backgroundColor: "#009f1a",
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: "#ffffff",
-        paddingVertical: 6,
-        alignItems: "center",
-        justifyContent: "center",
-        shadowColor: "#e67a73",
-        shadowOffset: { width: 0, height: 39 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 1,
-        width: 200,
-        bottom: "2%",
+        marginHorizontal: 4,
+        padding: 10,
+        backgroundColor: "#333",
+        borderRadius: 5,
+        zIndex:10,
+        top:'15.2%',
+        right:'42%'
     },
     cell: {
         width: 50,
         height: 50,
-        backgroundColor: "#4a4a4a",
         alignItems: "center",
         justifyContent: "center",
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        bottom: 50,
+        bottom: '5%',
     },
     cellText: {
         color: "white",
         fontSize: 25,
-        fontWeight: "bold",
-        fontFamily: "Poppins",
+        fontFamily: "Fun",
     },
     containerMain: {
         justifyContent: "center",
@@ -310,11 +288,10 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     homeIco: {
-        bottom: "5%",
         right: 140,
     },
     logo: {
-        width: 200,
+        width: 250,
         position: "absolute",
         bottom: "25%",
         alignItems: "center",
@@ -322,19 +299,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     score: {
-        fontFamily: "Poppins",
-        fontSize: 18,
+        fontFamily: "Fun",
+        fontSize: 24,
         color: "white",
-        bottom: 65,
+        bottom:'3%',
         right: "3%",
         alignSelf: "flex-end",
-    },
-    title: {
-        color: "white",
-        fontWeight: "bold",
-        bottom: "30%",
-        fontSize: 40,
-        fontFamily: "Poppins",
-        textAlign: "center",
     },
 });

@@ -18,6 +18,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Audio } from 'expo-av'; // Import the audio module
 
+
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
     const [sound, setSound] = useState(null);
@@ -34,27 +35,27 @@ export default function HomeScreen() {
         Linking.openURL(url);
     };
 
-    useEffect(() => {
-        // Load and play background music
-        const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require('../assets/music.mp3') // Path to your sound file
-            );
-            setSound(sound);
-            await sound.playAsync();
-            sound.setIsLoopingAsync(true); // Loop the sound
-        };
+    // useEffect(() => {
+    //     // Load and play background music
+    //     const loadSound = async () => {
+    //         const { sound } = await Audio.Sound.createAsync(
+    //             require('../assets/music.mp3') // Path to your sound file
+    //         );
+    //         setSound(sound);
+    //         await sound.playAsync();
+    //         sound.setIsLoopingAsync(true); // Loop the sound
+    //     };
         
-        loadSound();
+    //     loadSound();
 
-        return () => {
-            // Cleanup the sound when the component unmounts
-            if (sound) {
-                sound.stopAsync();
-                sound.unloadAsync();
-            }
-        };
-    }, []);
+    //     return () => {
+    //         // Cleanup the sound when the component unmounts
+    //         if (sound) {
+    //             sound.stopAsync();
+    //             sound.unloadAsync();
+    //         }
+    //     };
+    // }, []);
 
     useEffect(() => {
         Animated.loop(
@@ -109,16 +110,17 @@ export default function HomeScreen() {
                     </Pressable>
 
                     <Pressable style={styles.buttons}>
-                        <Text style={styles.text}>How to play?</Text>
+                        <Text style={styles.text}>Remove Ads</Text>
                     </Pressable>
                     <Text
                         style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Fun",
                             top: "35%",
                             color: "white",
+                            fontSize:18,
                         }}
                     >
-                        Support developer.
+                        Support developer
                     </Text>
                     <View style={{ flexDirection: "row", top: "60%" }}>
                         <Pressable
@@ -171,7 +173,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+
     buttons: {
+        flexDirection:'row',
         backgroundColor: "#0080ff",
         borderRadius: 4,
         borderWidth: 1,
@@ -185,7 +189,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 0,
         elevation: 1,
-        width: 150,
+        width: 200,
         marginTop: 30,
         
     },
@@ -206,8 +210,9 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
-        fontSize: 20,
+        fontSize: 24,
         textAlign: "center",
-        fontFamily: "PoppinsBold",
+        fontFamily: "Fun",
+
     },
 });

@@ -4,13 +4,48 @@ import {
     Text,
     Pressable,
     ImageBackground,
+    Animated,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "expo-router";
-import Background from "../assets/images/background.png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Background from "../assets/images/lostbg.png";
 
-export default function GameOver({ word, score }) {
+export default function GameOver({}) {
     const router = useRouter();
+
+    const [word, setWord] = useState("");
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        const _retrieveData = async () => {
+            try {
+                const value = await AsyncStorage.getItem("word");
+                if (value !== null) {
+                    setWord(value);
+                    console.log(value);
+                }
+            } catch (error) {}
+        };
+        _retrieveData();
+    }, []);
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(scaleAnim, {
+                    toValue: 1.1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, [scaleAnim]);
 
     const redirectHome = () => {
         router.push("/HomeScreen");
@@ -23,12 +58,18 @@ export default function GameOver({ word, score }) {
     return (
         <>
             <ImageBackground source={Background} style={styles.backgroundImage}>
-                <Text style={styles.title}>You Lost</Text>
-                <Text style={styles.text}>Your score: {score}</Text>
-                <Text style={styles.title}>Correct word is: {word}</Text>
-                <Pressable style={styles.button} onPress={newGame}>
-                    <Text style={styles.text}>Try Again</Text>
-                </Pressable>
+                <Text style={styles.title}>You Lost :(</Text>
+                <Text style={styles.text}>
+                    Correct word is:{" "}
+                    <Text style={{ fontFamily: "Fun", color: "#23de5b" }}>
+                        {word}
+                    </Text>
+                </Text>
+                <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                    <Pressable style={styles.button} onPress={newGame}>
+                        <Text style={styles.text}>Try Again</Text>
+                    </Pressable>
+                </Animated.View>
                 <Pressable style={styles.button} onPress={redirectHome}>
                     <Text style={styles.text}>Home Page</Text>
                 </Pressable>
@@ -36,6 +77,7 @@ export default function GameOver({ word, score }) {
         </>
     );
 }
+
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
@@ -46,7 +88,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     button: {
-        backgroundColor: "#009f1a",
+        backgroundColor: "#0080ff",
         borderRadius: 4,
         borderWidth: 1,
         borderColor: "#ffffff",
@@ -58,18 +100,15 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     title: {
-        fontWeight: "bold",
-        fontFamily: "Poppins",
-        fontSize: 24,
+        fontFamily: "Fun",
+        fontSize: 60,
         textAlign: "center",
-        marginBottom: 10,
+        marginBottom: 20,
         color: "white",
     },
     text: {
-        fontFamily: "Poppins",
-        fontSize: 16,
-        fontWeight: "700",
+        fontFamily: "Fun",
+        fontSize: 20,
         color: "white",
     },
-   
 });

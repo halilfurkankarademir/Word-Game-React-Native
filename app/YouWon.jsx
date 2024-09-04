@@ -16,12 +16,12 @@ import Cup from "../assets/images/cup.png";
 
 export default function YouWon({}) {
     const router = useRouter();
-    const [score, setScore] = useState(0);
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
+    const cupAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        // Animasyon döngüsü
+        // Scale animation for button
         Animated.loop(
             Animated.sequence([
                 Animated.timing(scaleAnim, {
@@ -31,28 +31,28 @@ export default function YouWon({}) {
                 }),
                 Animated.timing(scaleAnim, {
                     toValue: 1,
-                    duration: 1500,
+                    duration: 1000,
                     useNativeDriver: true,
                 }),
             ])
         ).start();
-    }, [scaleAnim]);
 
-    useEffect(() => {
-        
-        const retrieveData = async () => {
-            try {
-                const value = await AsyncStorage.getItem('score');
-                if (value !== null) {
-                    setScore(value); 
-                }
-            } catch (error) {
-                console.error('Error retrieving score from AsyncStorage:', error);
-            }
-        };
-        
-        retrieveData();
-    }, []); // Bu useEffect yalnızca bileşen ilk yüklendiğinde çalışır
+    
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(cupAnim, {
+                    toValue: -10,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(cupAnim, {
+                    toValue: 0,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, [scaleAnim, cupAnim]);
 
     const redirectHome = () => {
         router.push("/HomeScreen");
@@ -65,13 +65,14 @@ export default function YouWon({}) {
     return (
         <>
             <ImageBackground source={Background} style={styles.backgroundImage}>
-                <Image
-                    source={Cup}
-                    style={styles.cup}
-                    resizeMode="contain"
-                ></Image>
+                <Animated.View style={{ transform: [{ translateY: cupAnim }] }}>
+                    <Image
+                        source={Cup}
+                        style={styles.cup}
+                        resizeMode="contain"
+                    />
+                </Animated.View>
                 <Text style={styles.title}>You Won !</Text>
-                <Text style={styles.text}>Score: {score}</Text>
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                     <Pressable style={styles.button} onPress={newGame}>
                         <Text style={styles.text}>New Game</Text>
@@ -81,7 +82,7 @@ export default function YouWon({}) {
                     <Text style={styles.text}>Home Page</Text>
                 </Pressable>
                 <ConfettiCannon
-                    count={100}
+                    count={150}
                     origin={{ x: -10, y: 0 }}
                     fadeOut={true}
                 />
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     button: {
-        backgroundColor: "#009f1a",
+        backgroundColor: "#0080ff",
         borderRadius: 4,
         borderWidth: 1,
         borderColor: "#ffffff",
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
         elevation: 1,
         width: 150,
         marginVertical: 15,
+        top:'5%'
     },
     cup: {
         width: 150,
@@ -117,17 +119,15 @@ const styles = StyleSheet.create({
         bottom: "1%",
     },
     title: {
-        fontWeight: "bold",
-        fontFamily: "Poppins",
+        fontFamily: "Fun",
         fontSize: 60,
         textAlign: "center",
         marginBottom: 10,
         color: "white",
     },
     text: {
-        fontFamily: "Poppins",
+        fontFamily: "Fun",
         fontSize: 20,
-        fontWeight: "700",
         color: "white",
     },
 });
