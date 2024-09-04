@@ -275,7 +275,7 @@ export default function GameScreen() {
                 <Pressable onPress={handlePress} style={styles.homeIco}>
                     <Text style={styles.back}>Go Back</Text>
                 </Pressable>
-                <Text style={styles.score}>Score: {gameScore}</Text>
+                <Text style={styles.score} onPress={()=>console.warn(s)}>Score: {gameScore}</Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     button: {
         marginHorizontal: 4,
         padding: 10,
-        backgroundColor: "#333",
+        backgroundColor: "transparent",
         borderRadius: 5,
         zIndex: 10,
         top: '15.2%',
