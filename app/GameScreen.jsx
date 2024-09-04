@@ -17,6 +17,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -44,6 +45,12 @@ export default function GameScreen() {
 
     // Router
     const router = useRouter();
+
+    const animatedCellStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: withTiming(1.1, { duration: 200 }) }],
+        };
+    });
 
     // Functions
     function getRandomNumber(min, max) {
@@ -212,30 +219,22 @@ export default function GameScreen() {
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
                             {row.map((cell, cellIndex) => (
-                                <View
-                                    key={cellIndex}
-                                    style={[
-                                        styles.cell,
-                                        {
-                                            backgroundColor:
-                                                colors[rowIndex][cellIndex],
-                                            borderColor:
-                                                rowIndex === currentRow &&
-                                                cellIndex === currentCol
-                                                    ? "#969696"
-                                                    : "transparent",
-                                            borderWidth:
-                                                rowIndex === currentRow &&
-                                                cellIndex === currentCol
-                                                    ? 2
-                                                    : 0,
-                                        },
-                                    ]}
-                                >
-                                    <Text style={styles.cellText}>
-                                        {cell.toUpperCase()}
-                                    </Text>
-                                </View>
+                                <Animated.View 
+                                key={cellIndex}
+                                style={[
+                                    styles.cell,
+                                    animatedCellStyle, 
+                                    {
+                                        backgroundColor: colors[rowIndex][cellIndex],
+                                        borderColor: rowIndex === currentRow && cellIndex === currentCol ? "#969696" : "transparent",
+                                        borderWidth: rowIndex === currentRow && cellIndex === currentCol ? 2 : 0,
+                                    },
+                                ]}
+                            >
+                                <Text style={styles.cellText}>
+                                    {cell.toUpperCase()}
+                                </Text>
+                            </Animated.View>
                             ))}
                         </View>
                     ))}

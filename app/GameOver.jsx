@@ -57,6 +57,7 @@ export default function GameOver({}) {
             );
             setSound(sound);
             await sound.playAsync(); 
+            await sound.setVolumeAsync(0.1);
         };
 
         loadSound();

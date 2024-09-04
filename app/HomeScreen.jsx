@@ -18,46 +18,53 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Audio } from "expo-av"; 
 
 
+
 export default function HomeScreen() {
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-    const [sound, setSound] = useState(null);
-    const [volume, setVolume] = useState(0.1);
+    
+    const [buttonSound,setButtonSound] = useState();
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
     const router = useRouter();
 
-    const startGame = () => {
-        router.push("/GameScreen");
-    };
-
-    const openLink = (url) => {
-        Linking.openURL(url);
-    };
-
     useEffect(() => {
-        // Load and play background music
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require('../assets/music.mp3') // Path to your sound file
+                require("../assets/button-click.mp3")  
             );
-            setSound(sound);
-            await sound.playAsync();
-            sound.setIsLoopingAsync(true); // Loop the sound
-            sound.setVolumeAsync(volume);
+            setButtonSound(sound);
+            await sound.setVolumeAsync(0.1);
         };
-
         loadSound();
 
         return () => {
-            // Cleanup the sound when the component unmounts
-            if (sound) {
-                sound.stopAsync();
-                sound.unloadAsync();
+            if (buttonSound) {
+                buttonSound.unloadAsync();
             }
         };
     }, []);
 
+    const playButtonSound = async () => {
+        if (buttonSound) {
+            await buttonSound.replayAsync();  // Play the button sound
+        }
+    };
+
+    const startGame = async () => {
+        await playButtonSound();  // Play sound when starting the game
+        router.push("/GameScreen");
+    };
+
+    const openLink = async (url) => {
+        await playButtonSound();  // Play sound when a link is opened
+        Linking.openURL(url);
+    };
+
+    const openSettings = async () =>{
+        await playButtonSound();
+        setIsSettingsVisible(true)  
+    }
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
@@ -105,7 +112,7 @@ export default function HomeScreen() {
                     </Animated.View>
                     <Pressable
                         style={styles.buttons}
-                        onPress={() => setIsSettingsVisible(true)}
+                        onPress={() => openSettings()}
                     >
                         <Text style={styles.text}>Settings</Text>
                     </Pressable>
