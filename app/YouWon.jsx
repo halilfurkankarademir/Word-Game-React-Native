@@ -62,7 +62,7 @@ export default function YouWon({}) {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require('../assets/won.mp3') 
+                require('../assets/sounds/won.mp3') 
             );
             setSound(sound);
             await sound.playAsync(); 
@@ -82,7 +82,7 @@ export default function YouWon({}) {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/button-click.mp3")  
+                require("../assets/sounds/button-click.mp3")  
             );
             setButtonSound(sound);
             await sound.setVolumeAsync(0.05);

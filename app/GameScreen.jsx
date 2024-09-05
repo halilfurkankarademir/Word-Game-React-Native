@@ -207,7 +207,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/keyboard.mp3")  
+                require("../assets/sounds/keyboard.mp3")  
             );
             setKeyboardSound(sound);
             await sound.setVolumeAsync(0.05);
@@ -224,7 +224,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/reveal.mp3")  
+                require("../assets/sounds/reveal.mp3")  
             );
             setRevealSound(sound);
             await sound.setVolumeAsync(0.05);
@@ -241,7 +241,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/button-click.mp3")  
+                require("../assets/sounds/button-click.mp3")  
             );
             setGoBackSound(sound);
             await sound.setVolumeAsync(0.05);

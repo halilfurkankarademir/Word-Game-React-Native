@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Settings from "../components/Settings";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
@@ -18,12 +19,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Audio } from "expo-av"; 
 
-
-
 export default function HomeScreen() {
+
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-    
-    const [buttonSound,setButtonSound] = useState();
+    const [music, setMusic] = useState(true); 
+    const [buttonSound, setButtonSound] = useState();
+    const [backgroundMusic, setBackgroundMusic] = useState();
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -35,20 +36,59 @@ export default function HomeScreen() {
     };
 
     useEffect(() => {
-        const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/button-click.mp3")  
+        const loadSounds = async () => {
+            // Load button sound
+            const { sound: buttonSound } = await Audio.Sound.createAsync(
+                require("../assets/sounds/button-click.mp3")
             );
-            setButtonSound(sound);
-            await sound.setVolumeAsync(0.1);
+            setButtonSound(buttonSound);
+            await buttonSound.setVolumeAsync(0.1);
+
+            // Load background music
+            const { sound: backgroundMusic } = await Audio.Sound.createAsync(
+                require("../assets/sounds/background-music.mp3")
+            );
+            setBackgroundMusic(backgroundMusic);
+            await backgroundMusic.setVolumeAsync(0.03);
         };
-        loadSound();
+
+        loadSounds();
 
         return () => {
             if (buttonSound) {
                 buttonSound.unloadAsync();
             }
+            if (backgroundMusic) {
+                backgroundMusic.unloadAsync(); 
+            }
         };
+    }, []);
+
+    useEffect(() => {
+        const manageBackgroundMusic = async () => {
+            if (backgroundMusic) {
+                if (music) {
+                    await backgroundMusic.playAsync();
+                } else {
+                    await backgroundMusic.stopAsync(); 
+                }
+            }
+        };
+
+        manageBackgroundMusic();
+
+    }, [music, backgroundMusic]);
+
+    useEffect(() => {
+        const retrieveData = async () => {
+            try {
+                const value = await AsyncStorage.getItem("music");
+                if (value !== null) {
+                    setMusic(value === "true");
+                }
+            } catch (error) {}
+        };
+        retrieveData();
     }, []);
 
     const playButtonSound = async () => {
@@ -69,8 +109,15 @@ export default function HomeScreen() {
 
     const openSettings = async () =>{
         await playButtonSound();
-        setIsSettingsVisible(true)  
+        setIsSettingsVisible(true);  
     }
+    
+    const toggleMusic = async () => {
+        const newMusicState = !music;
+        setMusic(newMusicState);
+        await AsyncStorage.setItem("music", newMusicState.toString());
+    }
+
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
@@ -99,6 +146,8 @@ export default function HomeScreen() {
                         <Settings
                             isVisible={isSettingsVisible}
                             handleClose={() => setIsSettingsVisible(false)}
+                            toggleMusic={toggleMusic}
+                            musicEnabled={music}
                         />
                     )}
                     <Image
@@ -123,7 +172,7 @@ export default function HomeScreen() {
                         <Text style={styles.text}>Settings</Text>
                     </Pressable>
 
-                    <Pressable style={styles.buttons} onPress={()=>showToast()}>
+                    <Pressable style={styles.buttons} onPress={() => showToast()}>
                         <Text style={styles.text}>Remove Ads</Text>
                     </Pressable>
                     <Text

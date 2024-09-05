@@ -55,7 +55,7 @@ export default function GameOver({}) {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require('../assets/fail.mp3') 
+                require('../assets/sounds/fail.mp3') 
             );
             setSound(sound);
             await sound.playAsync(); 
@@ -75,7 +75,7 @@ export default function GameOver({}) {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/button-click.mp3")  
+                require("../assets/sounds/button-click.mp3")  
             );
             setButtonSound(sound);
             await sound.setVolumeAsync(0.05);
