@@ -7,11 +7,11 @@ import {
     ImageBackground,
     Image,
     BackHandler,
-    ToastAndroid
+    ToastAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Audio } from "expo-av"; 
+import { Audio } from "expo-av";
 import WordsJson from "../assets/words.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
@@ -19,8 +19,10 @@ import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -30,9 +32,9 @@ export default function GameScreen() {
     const [wordsData, setWordsData] = useState(WordsJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
-    const [keyboardSound,setKeyboardSound] = useState();
-    const [revealSound,setRevealSound] = useState();
-    const [goBackSound,setGoBackSound] = useState();
+    const [keyboardSound, setKeyboardSound] = useState();
+    const [revealSound, setRevealSound] = useState();
+    const [goBackSound, setGoBackSound] = useState();
 
     const [rows, setRows] = useState(
         Array.from({ length: 0 }, () => new Array(0).fill(""))
@@ -50,30 +52,31 @@ export default function GameScreen() {
     const [rightLetterLength, setRightLetterLength] = useState("");
 
     const [animatedColors, setAnimatedColors] = useState(
-        Array.from({ length: 5 }, () =>
-            Array.from({ length: 5 }, () => new Animated.Value(0)) // Animated value for opacity
+        Array.from(
+            { length: 5 },
+            () => Array.from({ length: 5 }, () => new Animated.Value(0)) // Animated value for opacity
         )
     );
 
     const playKeyboardSound = async () => {
         if (keyboardSound) {
-            await keyboardSound.replayAsync();  // Play the button sound
+            await keyboardSound.replayAsync(); // Play the button sound
         }
     };
     const playRevealSound = async () => {
         if (revealSound) {
-            await revealSound.replayAsync();  // Play the button sound
+            await revealSound.replayAsync(); // Play the button sound
         }
     };
-    
+
     const playGoBackSound = async () => {
         if (goBackSound) {
-            await goBackSound.replayAsync();  // Play the button sound
+            await goBackSound.replayAsync(); // Play the button sound
         }
     };
 
     const showToast = async () => {
-        ToastAndroid.show('Word can not be empty!', ToastAndroid.SHORT);
+        ToastAndroid.show("Word can not be empty!", ToastAndroid.SHORT);
     };
 
     // Router
@@ -102,9 +105,7 @@ export default function GameScreen() {
         const newColors = colors.map((row) => [...row]);
         await playKeyboardSound();
 
-        if (key === "check") {
-            checkWord();
-        } else if (key === "backspace") {
+        if (key === "backspace") {
             if (currentCol > 0) {
                 const prevCol = currentCol - 1;
                 newRows[currentRow][prevCol] = "";
@@ -129,12 +130,10 @@ export default function GameScreen() {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
 
-        if(word.length === 0){
+        if (word.length === 0) {
             showToast();
             return;
-        }
-
-        else{
+        } else {
             playRevealSound();
 
             for (let i = 0; i < selectedWord.length; i++) {
@@ -152,28 +151,33 @@ export default function GameScreen() {
                     animateCell(currentRow, i, "#919191");
                 }
             }
-        
+
             setRightLetterLength(correctLettersCount);
             setCurrentRow((prevRow) => prevRow + 1);
             setCurrentCol(0);
             setWord([]);
             setColors(newColors);
-        
+
             _storeData(
                 correctLettersCount === selectedWord.length
                     ? gameScore + 10
                     : gameScore
             );
         }
-
-
-        
     };
 
     const hasFinished = () => {
-        if (currentRow === 5) {
+        const wordInput = word.join("");
+
+        if (currentRow >= selectedWord.length && wordInput !== selectedWord) {
             setHasWon(false);
+            setShowYouWon(false);
             setShowGameOver(true);
+        }
+        if (rightLetterLength === selectedWord.length) {
+            setHasWon(true);
+            setShowYouWon(true);
+            setShowGameOver(false);
         }
     };
 
@@ -209,7 +213,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/keyboard.mp3")  
+                require("../assets/sounds/keyboard.mp3")
             );
             setKeyboardSound(sound);
             await sound.setVolumeAsync(0.05);
@@ -226,7 +230,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/reveal.mp3")  
+                require("../assets/sounds/reveal.mp3")
             );
             setRevealSound(sound);
             await sound.setVolumeAsync(0.05);
@@ -243,7 +247,7 @@ export default function GameScreen() {
     useEffect(() => {
         const loadSound = async () => {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/button-click.mp3")  
+                require("../assets/sounds/button-click.mp3")
             );
             setGoBackSound(sound);
             await sound.setVolumeAsync(0.05);
@@ -272,7 +276,10 @@ export default function GameScreen() {
             );
             setAnimatedColors(
                 Array.from({ length: letters.length }, () =>
-                    Array.from({ length: letters.length }, () => new Animated.Value(0))
+                    Array.from(
+                        { length: letters.length },
+                        () => new Animated.Value(0)
+                    )
                 )
             );
         }
@@ -285,13 +292,6 @@ export default function GameScreen() {
     useEffect(() => {
         hasFinished();
     }, [currentRow]);
-
-    useEffect(() => {
-        if (rightLetterLength === selectedWord.length) {
-            setHasWon(true);
-            setShowYouWon(true);
-        }
-    }, [rightLetterLength, selectedWord.length]);
 
     useEffect(() => {
         if (showGameOver) {
@@ -308,6 +308,12 @@ export default function GameScreen() {
         }
     }, [showGameOver, showYouWon, gameScore]);
 
+    useEffect(() => {
+        if (currentCol > 4) {
+            checkWord();
+        }
+    }, [currentCol]);
+
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>
@@ -315,22 +321,40 @@ export default function GameScreen() {
                 <Pressable onPress={handlePress} style={styles.homeIco}>
                     <Text style={styles.back}>Go Back</Text>
                 </Pressable>
-                <Text style={styles.score} onPress={()=>console.warn(selectedWord)}>Score: {gameScore}</Text>
+                <Text
+                    style={styles.score}
+                    onPress={() => console.warn(selectedWord)}
+                >
+                    Score: {gameScore}
+                </Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
                             {row.map((cell, cellIndex) => (
-                                <Animated.View 
+                                <Animated.View
                                     key={cellIndex}
                                     style={[
                                         styles.cell,
                                         {
-                                            backgroundColor: animatedColors[rowIndex][cellIndex].interpolate({
+                                            backgroundColor: animatedColors[
+                                                rowIndex
+                                            ][cellIndex].interpolate({
                                                 inputRange: [0, 1],
-                                                outputRange: ["#4a4a4a", colors[rowIndex][cellIndex]],
+                                                outputRange: [
+                                                    "#4a4a4a",
+                                                    colors[rowIndex][cellIndex],
+                                                ],
                                             }),
-                                            borderColor: rowIndex === currentRow && cellIndex === currentCol ? "#969696" : "transparent",
-                                            borderWidth: rowIndex === currentRow && cellIndex === currentCol ? 2 : 0,
+                                            borderColor:
+                                                rowIndex === currentRow &&
+                                                cellIndex === currentCol
+                                                    ? "#969696"
+                                                    : "transparent",
+                                            borderWidth:
+                                                rowIndex === currentRow &&
+                                                cellIndex === currentCol
+                                                    ? 2
+                                                    : 0,
                                         },
                                     ]}
                                 >
@@ -342,9 +366,6 @@ export default function GameScreen() {
                         </View>
                     ))}
                 </View>
-                <Pressable style={styles.button} onPress={()=>checkWord()}>
-                    {/* <FontAwesome name="check-square-o" size={24} color="white" /> */}
-                </Pressable>
                 <KeyboardLayout onKeyPressed={onKeyPressed} noKeys={noKeys} />
             </View>
         </ImageBackground>
@@ -355,43 +376,43 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
     },
-    back:{
-        fontFamily:'Fun',
-        color:'white',
-        fontSize:wp('5%'),
-        left:'5%',
-        bottom:wp('25%')
-    },    
+    back: {
+        fontFamily: "Fun",
+        color: "white",
+        fontSize: wp("5%"),
+        left: "5%",
+        bottom: wp("25%"),
+    },
     backgroundImage: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        width: wp('100%'),
-        height: hp("100%"),
+        width: wp("100%"),
+        height: hp("110%"),
     },
     button: {
-        width:wp('10%'),
-        height:hp('5%'),
-        padding: wp('5%'),
+        width: wp("10%"),
+        height: hp("5%"),
+        padding: wp("5%"),
         backgroundColor: "transparent",
         borderRadius: 5,
         zIndex: 10,
-        top: wp('19%'),
-        right: wp('42%'),
+        top: wp("19%"),
+        right: wp("42%"),
     },
     cell: {
-        width: wp('12%'),
-        height: wp('12%'),
+        width: wp("12%"),
+        height: wp("12%"),
         alignItems: "center",
         justifyContent: "center",
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        bottom: wp('30%'),
+        bottom: wp("30%"),
     },
     cellText: {
         color: "white",
-        fontSize: wp('5%'),
+        fontSize: wp("5%"),
         fontFamily: "Fun",
     },
     containerMain: {
@@ -400,22 +421,22 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     homeIco: {
-        right: wp('35%'),
+        right: wp("35%"),
     },
     logo: {
-        width: wp('50%'),
-        height:hp('40%'),
-        bottom:wp('0%'),
+        width: wp("50%"),
+        height: hp("40%"),
+        bottom: wp("0%"),
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
     },
     score: {
         fontFamily: "Fun",
-        fontSize: wp('5%'),
+        fontSize: wp("5%"),
         color: "white",
-        bottom:wp('31%'),
-        right: wp('11%'),
+        bottom: wp("31%"),
+        right: wp("11%"),
         alignSelf: "flex-end",
     },
 });

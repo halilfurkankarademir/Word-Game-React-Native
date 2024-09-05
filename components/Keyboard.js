@@ -8,7 +8,7 @@ export default function KeyboardLayout({ onKeyPressed, noKeys }) {
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-        [ { type: 'check', icon: <FontAwesome name="check-square-o" size={wp('5%')} color="white" /> },
+        [
             "z", "x", "c", "v", "b", "n", "m",
             { type: 'backspace', icon: <FontAwesome5 name="backspace" size={wp('5%')} color="white" /> }
         ],

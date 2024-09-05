@@ -105,6 +105,10 @@ export default function HomeScreen() {
         await playButtonSound();  // Play sound when starting the game
         router.push("/GameScreen");
     };
+    const redirectHowToPlay = async () => {
+        await playButtonSound();  
+        router.push("/HowToPlay");
+    };
 
     const openLink = async (url) => {
         await playButtonSound();  // Play sound when a link is opened
@@ -176,8 +180,8 @@ export default function HomeScreen() {
                         <Text style={styles.text}>Settings</Text>
                     </Pressable>
 
-                    <Pressable style={styles.buttons} onPress={() => showToast()}>
-                        <Text style={styles.text}>Remove Ads</Text>
+                    <Pressable style={styles.buttons} onPress={() => redirectHowToPlay()}>
+                        <Text style={styles.text}>How To Play ?</Text>
                     </Pressable>
                     <Text
                         style={{

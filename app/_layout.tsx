@@ -35,6 +35,7 @@ export default function RootLayout() {
         <Stack.Screen name='HomeScreen' options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='GameOver' options={{headerShown:false}}></Stack.Screen>
         <Stack.Screen name='YouWon' options={{headerShown:false}}></Stack.Screen>
+        <Stack.Screen name='HowToPlay' options={{headerShown:false}}></Stack.Screen>
       </Stack>
     </ThemeProvider>
   );
