@@ -7,6 +7,7 @@ import {
     ImageBackground,
     Animated,
     Linking,
+    ToastAndroid
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
@@ -27,6 +28,11 @@ export default function HomeScreen() {
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
     const router = useRouter();
+
+    const showToast = async () => {
+        await playButtonSound();
+        ToastAndroid.show('Not available right now!', ToastAndroid.SHORT);
+    };
 
     useEffect(() => {
         const loadSound = async () => {
@@ -117,7 +123,7 @@ export default function HomeScreen() {
                         <Text style={styles.text}>Settings</Text>
                     </Pressable>
 
-                    <Pressable style={styles.buttons}>
+                    <Pressable style={styles.buttons} onPress={()=>showToast()}>
                         <Text style={styles.text}>Remove Ads</Text>
                     </Pressable>
                     <Text

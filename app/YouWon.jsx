@@ -21,7 +21,10 @@ export default function YouWon({}) {
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const cupAnim = useRef(new Animated.Value(0)).current;
 
+
+    const [buttonSound,setButtonSound] = useState();
     const [sound, setSound] = useState(null);
+    
     useEffect(() => {
         // Scale animation for button
         Animated.loop(
@@ -76,11 +79,36 @@ export default function YouWon({}) {
         };
     }, []);
 
-    const redirectHome = () => {
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/button-click.mp3")  
+            );
+            setButtonSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (buttonSound) {
+                buttonSound.unloadAsync();
+            }
+        };
+    }, []);
+
+    const playButtonSound = async () => {
+        if (buttonSound) {
+            await buttonSound.replayAsync();  // Play the button sound
+        }
+    };
+
+    const redirectHome = async () => {
+        await playButtonSound();
         router.push("/HomeScreen");
     };
 
-    const newGame = () => {
+    const newGame =  async () => {
+        await playButtonSound();
         router.push("/GameScreen");
     };
 

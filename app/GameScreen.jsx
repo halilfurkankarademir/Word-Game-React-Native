@@ -7,6 +7,7 @@ import {
     ImageBackground,
     Image,
     BackHandler,
+    ToastAndroid
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -16,10 +17,8 @@ import React from "react";
 import KeyboardLayout from "../components/Keyboard";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
-
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -29,8 +28,9 @@ export default function GameScreen() {
     const [wordsData, setWordsData] = useState(WordsJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
-    const [buttonSound,setButtonSound] = useState();
+    const [keyboardSound,setKeyboardSound] = useState();
     const [revealSound,setRevealSound] = useState();
+    const [goBackSound,setGoBackSound] = useState();
 
     const [rows, setRows] = useState(
         Array.from({ length: 0 }, () => new Array(0).fill(""))
@@ -53,15 +53,25 @@ export default function GameScreen() {
         )
     );
 
-    const playButtonSound = async () => {
-        if (buttonSound) {
-            await buttonSound.replayAsync();  // Play the button sound
+    const playKeyboardSound = async () => {
+        if (keyboardSound) {
+            await keyboardSound.replayAsync();  // Play the button sound
         }
     };
     const playRevealSound = async () => {
         if (revealSound) {
             await revealSound.replayAsync();  // Play the button sound
         }
+    };
+    
+    const playGoBackSound = async () => {
+        if (goBackSound) {
+            await goBackSound.replayAsync();  // Play the button sound
+        }
+    };
+
+    const showToast = async () => {
+        ToastAndroid.show('Word can not be empty!', ToastAndroid.SHORT);
     };
 
     // Router
@@ -88,7 +98,7 @@ export default function GameScreen() {
     const onKeyPressed = async (key) => {
         const newRows = rows.map((row) => [...row]);
         const newColors = colors.map((row) => [...row]);
-        await playButtonSound();
+        await playKeyboardSound();
 
         if (key === "check") {
             checkWord();
@@ -113,39 +123,49 @@ export default function GameScreen() {
         setColors(newColors);
     };
 
-    const checkWord = async () => {
+    const checkWord = () => {
         const newColors = colors.map((row) => [...row]);
         let correctLettersCount = 0;
 
-        await playRevealSound();
-
-        for (let i = 0; i < selectedWord.length; i++) {
-            if (word[i] === selectedWord[i]) {
-                newColors[currentRow][i] = "#50ad44"; // Correct letter
-                correctLettersCount++;
-                setGameScore((score) => score + 10);
-                animateCell(currentRow, i, "#50ad44");
-            } else if (selectedWord.includes(word[i])) {
-                newColors[currentRow][i] = "#dea709"; // Correct letter wrong place
-                animateCell(currentRow, i, "#dea709");
-            } else {
-                newColors[currentRow][i] = "#919191"; // Wrong letter
-                setNoKeys((prev) => [...prev, word[i]]);
-                animateCell(currentRow, i, "#919191");
-            }
+        if(word.length === 0){
+            showToast();
+            return;
         }
-    
-        setRightLetterLength(correctLettersCount);
-        setCurrentRow((prevRow) => prevRow + 1);
-        setCurrentCol(0);
-        setWord([]);
-        setColors(newColors);
-    
-        _storeData(
-            correctLettersCount === selectedWord.length
-                ? gameScore + 10
-                : gameScore
-        );
+
+        else{
+            playRevealSound();
+
+            for (let i = 0; i < selectedWord.length; i++) {
+                if (word[i] === selectedWord[i]) {
+                    newColors[currentRow][i] = "#50ad44"; // Correct letter
+                    correctLettersCount++;
+                    setGameScore((score) => score + 10);
+                    animateCell(currentRow, i, "#50ad44");
+                } else if (selectedWord.includes(word[i])) {
+                    newColors[currentRow][i] = "#dea709"; // Correct letter wrong place
+                    animateCell(currentRow, i, "#dea709");
+                } else {
+                    newColors[currentRow][i] = "#919191"; // Wrong letter
+                    setNoKeys((prev) => [...prev, word[i]]);
+                    animateCell(currentRow, i, "#919191");
+                }
+            }
+        
+            setRightLetterLength(correctLettersCount);
+            setCurrentRow((prevRow) => prevRow + 1);
+            setCurrentCol(0);
+            setWord([]);
+            setColors(newColors);
+        
+            _storeData(
+                correctLettersCount === selectedWord.length
+                    ? gameScore + 10
+                    : gameScore
+            );
+        }
+
+
+        
     };
 
     const hasFinished = () => {
@@ -155,7 +175,8 @@ export default function GameScreen() {
         }
     };
 
-    const handlePress = () => {
+    const handlePress = async () => {
+        await playGoBackSound();
         router.push("/");
     };
 
@@ -188,14 +209,14 @@ export default function GameScreen() {
             const { sound } = await Audio.Sound.createAsync(
                 require("../assets/keyboard.mp3")  
             );
-            setButtonSound(sound);
+            setKeyboardSound(sound);
             await sound.setVolumeAsync(0.05);
         };
         loadSound();
 
         return () => {
-            if (buttonSound) {
-                buttonSound.unloadAsync();
+            if (keyboardSound) {
+                keyboardSound.unloadAsync();
             }
         };
     }, []);
@@ -212,7 +233,24 @@ export default function GameScreen() {
 
         return () => {
             if (revealSound) {
-                buttonSound.unloadAsync();
+                revealSound.unloadAsync();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/button-click.mp3")  
+            );
+            setGoBackSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (goBackSound) {
+                goBackSound.unloadAsync();
             }
         };
     }, []);
@@ -275,7 +313,7 @@ export default function GameScreen() {
                 <Pressable onPress={handlePress} style={styles.homeIco}>
                     <Text style={styles.back}>Go Back</Text>
                 </Pressable>
-                <Text style={styles.score} onPress={()=>console.warn(s)}>Score: {gameScore}</Text>
+                <Text style={styles.score} onPress={()=>console.warn(selectedWord)}>Score: {gameScore}</Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>

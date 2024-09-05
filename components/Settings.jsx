@@ -1,18 +1,68 @@
 import { View, StyleSheet, Text, Switch } from "react-native";
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Audio } from "expo-av"; 
 
 export default function Settings({ isVisible, handleClose }) {
     const [darkTheme, setDarkTheme] = useState(false);
     const [musicEnabled, setMusicEnabled] = useState(false);
+    const [buttonSound,setButtonSound] = useState();
+    const [switchSound,setSwitchSound] = useState();
+
+    const playButtonSound = async () => {
+        if (buttonSound) {
+            await buttonSound.replayAsync();  // Play the button sound
+        }
+    };
+    const playSwitchSound = async () => {
+        if (switchSound) {
+            await switchSound.replayAsync();  // Play the button sound
+        }
+    };
 
     const toggleDarkTheme = () => {
+        playSwitchSound();
         setDarkTheme(!darkTheme);
     };
 
     const toggleMusic = () => {
+        playSwitchSound();
         setMusicEnabled(!musicEnabled);
     };
+
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/switch.mp3")  
+            );
+            setSwitchSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (switchSound) {
+                switchSound.unloadAsync();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const loadSound = async () => {
+            const { sound } = await Audio.Sound.createAsync(
+                require("../assets/button-click.mp3")  
+            );
+            setButtonSound(sound);
+            await sound.setVolumeAsync(0.05);
+        };
+        loadSound();
+
+        return () => {
+            if (buttonSound) {
+                buttonSound.unloadAsync();
+            }
+        };
+    }, []);
 
     return (
         <>
@@ -35,7 +85,7 @@ export default function Settings({ isVisible, handleClose }) {
                             value={darkTheme}
                             onValueChange={toggleDarkTheme}
                             thumbColor={darkTheme ? "#e4b979" : "#f4f3f4"}
-                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            trackColor={{ false: "#767577", true: "#767577" }}
                         />
                     </View>
 
@@ -45,7 +95,7 @@ export default function Settings({ isVisible, handleClose }) {
                             value={musicEnabled}
                             onValueChange={toggleMusic}
                             thumbColor={musicEnabled ? "#e4b979" : "#f4f3f4"}
-                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            trackColor={{ false: "#767577", true: "#767577" }}
                         />
                     </View>
                 </View>
@@ -56,7 +106,7 @@ export default function Settings({ isVisible, handleClose }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#2c236c",
+        backgroundColor: "#0080ff",
         width: "60%",
         height: "30%",
         position: "absolute",
@@ -71,17 +121,15 @@ const styles = StyleSheet.create({
         color:'white'
     },
     title: {
-        fontWeight: "bold",
-        fontFamily: "Poppins",
-        fontSize: 24,
+        fontFamily: "Fun",
+        fontSize: 32,
         textAlign: "center",
         marginBottom: 10,
         color:'white'
     },
     text: {
-        fontFamily: "Poppins",
-        fontSize: 16,
-        fontWeight: "700",
+        fontFamily: "Fun",
+        fontSize: 20,
         color:'white'
     },
     settingsRow: {
