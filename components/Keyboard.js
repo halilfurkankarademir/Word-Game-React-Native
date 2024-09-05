@@ -1,15 +1,16 @@
 import { View, StyleSheet, Pressable,Text } from "react-native";
 import React from "react";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function KeyboardLayout({ onKeyPressed, noKeys }) {
     const keys = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-        ["   ",
+        [ { type: 'check', icon: <FontAwesome name="check-square-o" size={wp('5%')} color="white" /> },
             "z", "x", "c", "v", "b", "n", "m",
-            { type: 'backspace', icon: <FontAwesome5 name="backspace" size={24} color="white" /> }
+            { type: 'backspace', icon: <FontAwesome5 name="backspace" size={wp('5%')} color="white" /> }
         ],
     ];
 
@@ -47,26 +48,23 @@ export default function KeyboardLayout({ onKeyPressed, noKeys }) {
 
 const styles = StyleSheet.create({
     keyboard: {
-        top: 600,
-        right: 0,
-        left: 0,
-        position: 'absolute'
+        bottom: wp('20%')
     },
     row: {
         flexDirection: "row",
         justifyContent: "center",
-        marginBottom: 10,
+        marginBottom: wp('3%'),
     },
     key: {
         marginHorizontal: 4,
-        padding: 10,
+        padding: wp('2.5%'),
         backgroundColor: "#333",
         borderRadius: 5,
     },
     keyText: {
         color: "white",
         textAlign: "center",
-        fontSize: 20,
+        fontSize: wp('5%'),
         fontFamily: 'Fun'
     },
     disabledKey: {

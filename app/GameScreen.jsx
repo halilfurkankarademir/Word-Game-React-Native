@@ -19,6 +19,8 @@ import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 export default function GameScreen() {
     const [selectedWord, setSelectedWord] = useState("");
@@ -341,7 +343,7 @@ export default function GameScreen() {
                     ))}
                 </View>
                 <Pressable style={styles.button} onPress={()=>checkWord()}>
-                    <FontAwesome name="check-square-o" size={24} color="white" />
+                    {/* <FontAwesome name="check-square-o" size={24} color="white" /> */}
                 </Pressable>
                 <KeyboardLayout onKeyPressed={onKeyPressed} noKeys={noKeys} />
             </View>
@@ -356,39 +358,40 @@ const styles = StyleSheet.create({
     back:{
         fontFamily:'Fun',
         color:'white',
-        fontSize:24,
+        fontSize:wp('5%'),
         left:'5%',
-        top:5
+        bottom:wp('25%')
     },    
     backgroundImage: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        width: "100%",
-        height: "100%",
+        width: wp('100%'),
+        height: hp("100%"),
     },
     button: {
-        marginHorizontal: 4,
-        padding: 10,
+        width:wp('10%'),
+        height:hp('5%'),
+        padding: wp('5%'),
         backgroundColor: "transparent",
         borderRadius: 5,
         zIndex: 10,
-        top: '15.2%',
-        right: '42%',
+        top: wp('19%'),
+        right: wp('42%'),
     },
     cell: {
-        width: 50,
-        height: 50,
+        width: wp('12%'),
+        height: wp('12%'),
         alignItems: "center",
         justifyContent: "center",
         marginHorizontal: 8,
         marginVertical: 8,
         borderRadius: 8,
-        bottom: '5%',
+        bottom: wp('30%'),
     },
     cellText: {
         color: "white",
-        fontSize: 25,
+        fontSize: wp('5%'),
         fontFamily: "Fun",
     },
     containerMain: {
@@ -397,22 +400,22 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     homeIco: {
-        right: 140,
+        right: wp('35%'),
     },
     logo: {
-        width: 250,
-        position: "absolute",
-        bottom: "22%",
+        width: wp('50%'),
+        height:hp('40%'),
+        bottom:wp('0%'),
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
     },
     score: {
         fontFamily: "Fun",
-        fontSize: 24,
+        fontSize: wp('5%'),
         color: "white",
-        bottom: '3%',
-        right: "3%",
+        bottom:wp('31%'),
+        right: wp('11%'),
         alignSelf: "flex-end",
     },
 });

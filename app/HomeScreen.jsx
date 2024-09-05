@@ -7,7 +7,7 @@ import {
     ImageBackground,
     Animated,
     Linking,
-    ToastAndroid
+    ToastAndroid,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
@@ -18,6 +18,8 @@ import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Audio } from "expo-av"; 
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 export default function HomeScreen() {
 
@@ -27,6 +29,8 @@ export default function HomeScreen() {
     const [backgroundMusic, setBackgroundMusic] = useState();
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  
 
     const router = useRouter();
 
@@ -180,12 +184,12 @@ export default function HomeScreen() {
                             fontFamily: "Fun",
                             top: "35%",
                             color: "white",
-                            fontSize: 18,
+                            fontSize: wp('4%'),
                         }}
                     >
                         Support developer
                     </Text>
-                    <View style={{ flexDirection: "row", top: "60%" }}>
+                    <View style={{ flexDirection: "row", top: hp('29%') }}>
                         <Pressable
                             onPress={() =>
                                 openLink(
@@ -195,7 +199,7 @@ export default function HomeScreen() {
                         >
                             <AntDesign
                                 name="instagram"
-                                size={20}
+                                size={wp('5%')}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -209,7 +213,7 @@ export default function HomeScreen() {
                         >
                             <FontAwesome
                                 name="linkedin-square"
-                                size={20}
+                                size={wp('5%')}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -223,7 +227,7 @@ export default function HomeScreen() {
                         >
                             <AntDesign
                                 name="github"
-                                size={18}
+                                size={wp('5%')}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -251,7 +255,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 0,
         elevation: 1,
-        width: 200,
+        width: wp('50%'),
         marginTop: 30,
     },
     containerMain: {
@@ -265,13 +269,14 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     logo: {
-        width: 500,
+        width: wp('80%'),
+        height: hp('100%'),
         position: "absolute",
-        bottom: "20%",
+        bottom: wp('50%'),
     },
     text: {
         color: "white",
-        fontSize: 24,
+        fontSize: wp('5%'),
         textAlign: "center",
         fontFamily: "Fun",
     },

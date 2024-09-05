@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Background from "../assets/images/lostbg.png";
 import { Audio } from "expo-av"; 
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function GameOver({}) {
     const router = useRouter();
@@ -148,19 +149,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         elevation: 1,
-        width: 150,
+        width: wp('35%'),
         marginVertical: 20,
     },
     title: {
         fontFamily: "Fun",
-        fontSize: 60,
+        fontSize: wp('13%'),
         textAlign: "center",
         marginBottom: 20,
         color: "white",
     },
     text: {
         fontFamily: "Fun",
-        fontSize: 20,
+        fontSize: wp('5%'),
         color: "white",
     },
 });

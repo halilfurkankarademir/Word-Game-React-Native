@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Audio } from "expo-av";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function Settings({ isVisible, handleClose, toggleMusic, musicEnabled }) {
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#0080ff",
         width: "60%",
-        height: "25%",
+        height: wp('55%'),
         position: "absolute",
         zIndex: 2,
         borderRadius: 8,
@@ -88,14 +89,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Fun",
-        fontSize: 32,
+        fontSize: wp('7%'),
         textAlign: "center",
         marginBottom: 10,
         color: "white",
     },
     text: {
         fontFamily: "Fun",
-        fontSize: 20,
+        fontSize: wp('5%'),
         color: "white",
     },
     settingsRow: {

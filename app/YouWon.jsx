@@ -14,6 +14,7 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import Background from "../assets/images/wonbg.png";
 import Cup from "../assets/images/cup.png";
 import { Audio } from "expo-av"; 
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function YouWon({}) {
     const router = useRouter();
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         elevation: 1,
-        width: 150,
+        width: wp('35%'),
         marginVertical: 15,
     },
     cup: {
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Fun",
-        fontSize: 60,
+        fontSize: wp('15%'),
         textAlign: "center",
         marginBottom: 10,
         color: "white",
