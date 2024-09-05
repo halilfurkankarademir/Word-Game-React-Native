@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Word Hunt",
-    "slug": "Word Hunt",
+    "slug": "wordhunt",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/wh_logo_small.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/wh_logo_small.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.hfk38.wordhunt"
     },
     "web": {
       "bundler": "metro",
@@ -32,13 +33,21 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-2234626467432384~9208473542", 
-          "iosAppId": "ca-app-pub-XXXXXXXXXXXX~XXXXXXXXXX" 
+          "androidAppId": "ca-app-pub-2234626467432384~9208473542",
+          "iosAppId": "ca-app-pub-XXXXXXXXXXXX~XXXXXXXXXX"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ff8572a2-1a43-4aac-bedb-955b2646fa9e"
+      }
     }
   }
 }
