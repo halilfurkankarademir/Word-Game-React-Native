@@ -17,43 +17,45 @@ import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Audio } from "expo-av"; 
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { Audio } from "expo-av";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export default function HomeScreen() {
-
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-    const [music, setMusic] = useState(true); 
+    const [music, setMusic] = useState(true);
     const [buttonSound, setButtonSound] = useState();
     const [backgroundMusic, setBackgroundMusic] = useState();
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  
-
     const router = useRouter();
 
     const showToast = async () => {
         await playButtonSound();
-        ToastAndroid.show('Not available right now!', ToastAndroid.SHORT);
+        ToastAndroid.show("Not available right now!", ToastAndroid.SHORT);
     };
 
     useEffect(() => {
         const loadSounds = async () => {
             // Load button sound
-            const { sound: buttonSound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/button-click.mp3")
-            );
-            setButtonSound(buttonSound);
-            await buttonSound.setVolumeAsync(0.1);
+            try {
+                const { sound: buttonSound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/button-click.mp3")
+                );
+                setButtonSound(buttonSound);
+                await buttonSound.setVolumeAsync(0.1);
 
-            // Load background music
-            const { sound: backgroundMusic } = await Audio.Sound.createAsync(
-                require("../assets/sounds/background-music.mp3")
-            );
-            setBackgroundMusic(backgroundMusic);
-            await backgroundMusic.setVolumeAsync(0.03);
+                // Load background music
+                const { sound: backgroundMusic } =
+                    await Audio.Sound.createAsync(
+                        require("../assets/sounds/background-music.mp3")
+                    );
+                setBackgroundMusic(backgroundMusic);
+                await backgroundMusic.setVolumeAsync(0.03);
+            } catch {}
         };
 
         loadSounds();
@@ -63,7 +65,7 @@ export default function HomeScreen() {
                 buttonSound.unloadAsync();
             }
             if (backgroundMusic) {
-                backgroundMusic.unloadAsync(); 
+                backgroundMusic.unloadAsync();
             }
         };
     }, []);
@@ -74,13 +76,12 @@ export default function HomeScreen() {
                 if (music) {
                     await backgroundMusic.playAsync();
                 } else {
-                    await backgroundMusic.stopAsync(); 
+                    await backgroundMusic.stopAsync();
                 }
             }
         };
 
         manageBackgroundMusic();
-
     }, [music, backgroundMusic]);
 
     useEffect(() => {
@@ -97,34 +98,34 @@ export default function HomeScreen() {
 
     const playButtonSound = async () => {
         if (buttonSound) {
-            await buttonSound.replayAsync();  // Play the button sound
+            await buttonSound.replayAsync(); // Play the button sound
         }
     };
 
     const startGame = async () => {
-        await playButtonSound();  // Play sound when starting the game
+        await playButtonSound(); // Play sound when starting the game
         router.push("/GameScreen");
     };
     const redirectHowToPlay = async () => {
-        await playButtonSound();  
+        await playButtonSound();
         router.push("/HowToPlay");
     };
 
     const openLink = async (url) => {
-        await playButtonSound();  // Play sound when a link is opened
+        await playButtonSound(); // Play sound when a link is opened
         Linking.openURL(url);
     };
 
-    const openSettings = async () =>{
+    const openSettings = async () => {
         await playButtonSound();
-        setIsSettingsVisible(true);  
-    }
-    
+        setIsSettingsVisible(true);
+    };
+
     const toggleMusic = async () => {
         const newMusicState = !music;
         setMusic(newMusicState);
         await AsyncStorage.setItem("music", newMusicState.toString());
-    }
+    };
 
     useEffect(() => {
         Animated.loop(
@@ -180,7 +181,10 @@ export default function HomeScreen() {
                         <Text style={styles.text}>Settings</Text>
                     </Pressable>
 
-                    <Pressable style={styles.buttons} onPress={() => redirectHowToPlay()}>
+                    <Pressable
+                        style={styles.buttons}
+                        onPress={() => redirectHowToPlay()}
+                    >
                         <Text style={styles.text}>How To Play ?</Text>
                     </Pressable>
                     <Text
@@ -188,12 +192,12 @@ export default function HomeScreen() {
                             fontFamily: "Fun",
                             top: "35%",
                             color: "white",
-                            fontSize: wp('4%'),
+                            fontSize: wp("5%"),
                         }}
                     >
                         Support developer
                     </Text>
-                    <View style={{ flexDirection: "row", top: hp('29%') }}>
+                    <View style={{ flexDirection: "row", top: hp("29%") }}>
                         <Pressable
                             onPress={() =>
                                 openLink(
@@ -203,7 +207,7 @@ export default function HomeScreen() {
                         >
                             <AntDesign
                                 name="instagram"
-                                size={wp('5%')}
+                                size={wp("5%")}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -217,7 +221,7 @@ export default function HomeScreen() {
                         >
                             <FontAwesome
                                 name="linkedin-square"
-                                size={wp('5%')}
+                                size={wp("5%")}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -231,7 +235,7 @@ export default function HomeScreen() {
                         >
                             <AntDesign
                                 name="github"
-                                size={wp('5%')}
+                                size={wp("5%")}
                                 color="white"
                                 style={{ marginHorizontal: 5 }}
                             />
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 0,
         elevation: 1,
-        width: wp('50%'),
+        width: wp("50%"),
         marginTop: 30,
     },
     containerMain: {
@@ -273,14 +277,14 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     logo: {
-        width: wp('80%'),
-        height: hp('100%'),
+        width: wp("80%"),
+        height: hp("100%"),
         position: "absolute",
-        bottom: wp('50%'),
+        bottom: wp("60%"),
     },
     text: {
         color: "white",
-        fontSize: wp('5%'),
+        fontSize: wp("7%"),
         textAlign: "center",
         fontFamily: "Fun",
     },

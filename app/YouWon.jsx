@@ -13,19 +13,21 @@ import { useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 import Background from "../assets/images/wonbg.png";
 import Cup from "../assets/images/cup.png";
-import { Audio } from "expo-av"; 
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Audio } from "expo-av";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export default function YouWon({}) {
     const router = useRouter();
-    
+
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const cupAnim = useRef(new Animated.Value(0)).current;
 
-
-    const [buttonSound,setButtonSound] = useState();
+    const [buttonSound, setButtonSound] = useState();
     const [sound, setSound] = useState(null);
-    
+
     useEffect(() => {
         // Scale animation for button
         Animated.loop(
@@ -43,7 +45,6 @@ export default function YouWon({}) {
             ])
         ).start();
 
-    
         Animated.loop(
             Animated.sequence([
                 Animated.timing(cupAnim, {
@@ -62,12 +63,14 @@ export default function YouWon({}) {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require('../assets/sounds/won.mp3') 
-            );
-            setSound(sound);
-            await sound.playAsync(); 
-            await sound.setVolumeAsync(0.1);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/won.mp3")
+                );
+                setSound(sound);
+                await sound.playAsync();
+                await sound.setVolumeAsync(0.1);
+            } catch {}
         };
 
         loadSound();
@@ -82,11 +85,13 @@ export default function YouWon({}) {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/button-click.mp3")  
-            );
-            setButtonSound(sound);
-            await sound.setVolumeAsync(0.05);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/button-click.mp3")
+                );
+                setButtonSound(sound);
+                await sound.setVolumeAsync(0.05);
+            } catch {}
         };
         loadSound();
 
@@ -99,7 +104,7 @@ export default function YouWon({}) {
 
     const playButtonSound = async () => {
         if (buttonSound) {
-            await buttonSound.replayAsync();  // Play the button sound
+            await buttonSound.replayAsync(); // Play the button sound
         }
     };
 
@@ -108,7 +113,7 @@ export default function YouWon({}) {
         router.push("/HomeScreen");
     };
 
-    const newGame =  async () => {
+    const newGame = async () => {
         await playButtonSound();
         router.push("/GameScreen");
     };
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         elevation: 1,
-        width: wp('35%'),
+        width: wp("35%"),
         marginVertical: 15,
     },
     cup: {
@@ -170,14 +175,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Fun",
-        fontSize: wp('15%'),
+        fontSize: wp("18%"),
         textAlign: "center",
         marginBottom: 10,
         color: "white",
     },
     text: {
         fontFamily: "Fun",
-        fontSize: 20,
+        fontSize: wp("6%"),
         color: "white",
     },
 });

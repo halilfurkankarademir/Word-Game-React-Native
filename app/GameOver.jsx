@@ -10,8 +10,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Background from "../assets/images/lostbg.png";
-import { Audio } from "expo-av"; 
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Audio } from "expo-av";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export default function GameOver({}) {
     const router = useRouter();
@@ -19,8 +22,7 @@ export default function GameOver({}) {
     const [word, setWord] = useState("");
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
-
-    const [buttonSound,setButtonSound] = useState();
+    const [buttonSound, setButtonSound] = useState();
     const [sound, setSound] = useState(null);
 
     useEffect(() => {
@@ -55,12 +57,14 @@ export default function GameOver({}) {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require('../assets/sounds/fail.mp3') 
-            );
-            setSound(sound);
-            await sound.playAsync(); 
-            await sound.setVolumeAsync(0.1);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/fail.mp3")
+                );
+                setSound(sound);
+                await sound.playAsync();
+                await sound.setVolumeAsync(0.1);
+            } catch {}
         };
 
         loadSound();
@@ -75,11 +79,13 @@ export default function GameOver({}) {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/button-click.mp3")  
-            );
-            setButtonSound(sound);
-            await sound.setVolumeAsync(0.05);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/button-click.mp3")
+                );
+                setButtonSound(sound);
+                await sound.setVolumeAsync(0.05);
+            } catch {}
         };
         loadSound();
 
@@ -92,10 +98,9 @@ export default function GameOver({}) {
 
     const playButtonSound = async () => {
         if (buttonSound) {
-            await buttonSound.replayAsync();  // Play the button sound
+            await buttonSound.replayAsync(); // Play the button sound
         }
     };
-
 
     const redirectHome = async () => {
         await playButtonSound();
@@ -107,7 +112,6 @@ export default function GameOver({}) {
         router.push("/GameScreen");
     };
 
-    
     return (
         <>
             <ImageBackground source={Background} style={styles.backgroundImage}>
@@ -149,19 +153,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         elevation: 1,
-        width: wp('35%'),
+        width: wp("35%"),
         marginVertical: 20,
     },
     title: {
         fontFamily: "Fun",
-        fontSize: wp('13%'),
+        fontSize: wp("18%"),
         textAlign: "center",
         marginBottom: 20,
         color: "white",
     },
     text: {
         fontFamily: "Fun",
-        fontSize: wp('5%'),
+        fontSize: wp("6%"),
         color: "white",
     },
 });

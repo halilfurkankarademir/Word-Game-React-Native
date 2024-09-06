@@ -28,7 +28,7 @@ export default function HowToPlay() {
         <Text style={styles.text}>The letter is in the correct position.</Text>
       </View>
       <Pressable style={styles.button} onPress={homepage}>
-        <Text style={{fontFamily:'Fun', color:'white', fontSize:wp('5%')}}>I got it!</Text>
+        <Text style={{fontFamily:'Fun', color:'white', fontSize:wp('6%')}}>I got it!</Text>
       </Pressable>
     </ImageBackground>
   )
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Fun",
-        fontSize: wp('10%'),
+        fontSize: wp('12%'),
         textAlign: "center",
         marginBottom: 10,
         color: "white",
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     text: {
         width:wp('80%'),
         fontFamily: "Fun",
-        fontSize: wp('5%'),
+        fontSize: wp('6%'),
         color: "white",
     },
 });

@@ -12,11 +12,11 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
-import WordsJson from "../assets/words.json";
+import WordsEnJson from "../assets/words/wordsEn.json";
+import WordsTrJson from "../assets/words/wordsTr.json";
 import React from "react";
 import KeyboardLayout from "../components/Keyboard";
 import { useRouter } from "expo-router";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/gamebg.png";
 import {
@@ -29,7 +29,7 @@ export default function GameScreen() {
     const [hasWon, setHasWon] = useState(false);
     const [showGameOver, setShowGameOver] = useState(false);
     const [showYouWon, setShowYouWon] = useState(false);
-    const [wordsData, setWordsData] = useState(WordsJson);
+    const [wordsData, setWordsData] = useState(WordsTrJson);
     const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
     const [gameScore, setGameScore] = useState(0);
     const [keyboardSound, setKeyboardSound] = useState();
@@ -212,11 +212,13 @@ export default function GameScreen() {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/keyboard.mp3")
-            );
-            setKeyboardSound(sound);
-            await sound.setVolumeAsync(0.05);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/keyboard.mp3")
+                );
+                setKeyboardSound(sound);
+                await sound.setVolumeAsync(0.05);
+            } catch {}
         };
         loadSound();
 
@@ -229,11 +231,15 @@ export default function GameScreen() {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/reveal.mp3")
-            );
-            setRevealSound(sound);
-            await sound.setVolumeAsync(0.05);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/reveal.mp3")
+                );
+                setRevealSound(sound);
+                await sound.setVolumeAsync(0.05);
+            } catch {
+                console.error("Error loading sound:", error);
+            }
         };
         loadSound();
 
@@ -246,12 +252,17 @@ export default function GameScreen() {
 
     useEffect(() => {
         const loadSound = async () => {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/button-click.mp3")
-            );
-            setGoBackSound(sound);
-            await sound.setVolumeAsync(0.05);
+            try {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("../assets/sounds/button-click.mp3")
+                );
+                setGoBackSound(sound); // Ses dosyasını state'e kaydet
+                await sound.setVolumeAsync(0.05); // Sesin ses düzeyini ayarla
+            } catch (error) {
+                console.error("Error loading sound:", error); // Olası hataları yakala
+            }
         };
+
         loadSound();
 
         return () => {
@@ -379,7 +390,7 @@ const styles = StyleSheet.create({
     back: {
         fontFamily: "Fun",
         color: "white",
-        fontSize: wp("5%"),
+        fontSize: wp("6%"),
         left: "5%",
         bottom: wp("25%"),
     },
@@ -412,7 +423,7 @@ const styles = StyleSheet.create({
     },
     cellText: {
         color: "white",
-        fontSize: wp("5%"),
+        fontSize: wp("6%"),
         fontFamily: "Fun",
     },
     containerMain: {
@@ -433,10 +444,10 @@ const styles = StyleSheet.create({
     },
     score: {
         fontFamily: "Fun",
-        fontSize: wp("5%"),
+        fontSize: wp("6%"),
         color: "white",
         bottom: wp("31%"),
-        right: wp("11%"),
+        right: wp("12%"),
         alignSelf: "flex-end",
     },
 });
