@@ -1,7 +1,7 @@
 import string
 import json
 
-filepath = "C:/Users/hfk/Desktop/wordsEn.txt"
+filepath = "C:/Users/hfk/Desktop/words.txt"
 
 with open(filepath,'r', encoding='utf-8') as file:
     content = file.read()
@@ -17,5 +17,5 @@ for word in wordList:
         continue
     
 
-with open('wordsEn.json','w',encoding='utf-8') as wordJson:
+with open('wordsTr.json','w',encoding='utf-8') as wordJson:
     json.dump(_5LetterWords,wordJson,ensure_ascii=False,indent=4)

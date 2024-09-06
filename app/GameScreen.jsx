@@ -2,7 +2,6 @@ import {
     Animated,
     StyleSheet,
     View,
-    Pressable,
     Text,
     ImageBackground,
     Image,
@@ -25,10 +24,11 @@ import {
 } from "react-native-responsive-screen";
 import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function GameScreen() {
     const { t } = useTranslation();
-    const [lang, setLang] = useState('en');
+    const [lang, setLang] = useState("en");
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
     const [showGameOver, setShowGameOver] = useState(false);
@@ -41,13 +41,11 @@ export default function GameScreen() {
     const [goBackSound, setGoBackSound] = useState();
 
     const [rows, setRows] = useState(
-        Array.from({ length: 0 }, () => new Array(0).fill(""))
+        Array.from({ length: 6 }, () => new Array(5).fill(""))
     );
 
     const [colors, setColors] = useState(
-        Array.from({ length: 5 }, () =>
-            Array.from({ length: 5 }, () => "#ff65ff")
-        )
+        Array.from({ length: 6 }, () => new Array(5).fill("#ff65ff"))
     );
 
     const [word, setWord] = useState([]);
@@ -56,9 +54,8 @@ export default function GameScreen() {
     const [rightLetterLength, setRightLetterLength] = useState("");
 
     const [animatedColors, setAnimatedColors] = useState(
-        Array.from(
-            { length: 5 },
-            () => Array.from({ length: 5 }, () => new Animated.Value(0))
+        Array.from({ length: 6 }, () =>
+            Array.from({ length: 5 }, () => new Animated.Value(0))
         )
     );
 
@@ -67,12 +64,12 @@ export default function GameScreen() {
     useEffect(() => {
         const loadLanguage = async () => {
             try {
-                const savedLang = await AsyncStorage.getItem('language');
+                const savedLang = await AsyncStorage.getItem("language");
                 if (savedLang) {
                     setLang(savedLang);
                 }
             } catch (error) {
-                console.error('Error loading language:', error);
+                console.error("Error loading language:", error);
             }
         };
 
@@ -80,9 +77,9 @@ export default function GameScreen() {
     }, []);
 
     useEffect(() => {
-        if (lang === 'en') {
+        if (lang === "en") {
             setWordsData(WordsEnJson);
-        } else if (lang === 'tr') {
+        } else if (lang === "tr") {
             setWordsData(WordsTrJson);
         }
     }, [lang]);
@@ -126,36 +123,25 @@ export default function GameScreen() {
     useEffect(() => {
         if (selectedWord && wordsData) {
             const letters = selectedWord.split("");
-            setRows(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("")
-                )
-            );
+            setRows(Array.from({ length: 6 }, () => new Array(5).fill("")));
             setColors(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("#4a4a4a")
-                )
+                Array.from({ length: 6 }, () => new Array(5).fill("#4a4a4a"))
             );
             setAnimatedColors(
-                Array.from({ length: letters.length }, () =>
-                    Array.from(
-                        { length: letters.length },
-                        () => new Animated.Value(0)
-                    )
+                Array.from({ length: 6 }, () =>
+                    Array.from({ length: 5 }, () => new Animated.Value(0))
                 )
             );
         }
     }, [selectedWord]);
 
-
     useEffect(() => {
         randomWord();
     }, [wordsData]);
 
-
     useEffect(() => {
         const checkGameStatus = () => {
-            if (currentRow >= selectedWord.length && word.join("") !== selectedWord) {
+            if (currentRow >= 6 && word.join("") !== selectedWord) {
                 setHasWon(false);
                 setShowYouWon(false);
                 setShowGameOver(true);
@@ -243,7 +229,7 @@ export default function GameScreen() {
                 setCurrentCol(prevCol);
             }
         } else {
-            if (currentCol < selectedWord.length) {
+            if (currentCol < 5) {
                 newRows[currentRow][currentCol] = key;
                 setWord((prev) => [...prev, key]);
                 setRows(newRows);
@@ -294,15 +280,9 @@ export default function GameScreen() {
         }
     };
 
-    const handlePress = async () => {
-        await playGoBackSound();
-        router.push("/");
-    };
-
     const _storeData = async (score) => {
         try {
             await AsyncStorage.setItem("score", score.toString());
-            await AsyncStorage.setItem("word", selectedWord.toString());
         } catch (error) {
             console.error("Error saving score:", error);
         }
@@ -310,18 +290,13 @@ export default function GameScreen() {
 
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
-            <View style={styles.containerMain}>
-                <Image source={Logo} style={styles.logo} resizeMode="center" />
-                <Pressable onPress={handlePress} style={styles.homeIco}>
-                    <Text style={styles.back}>{t("game.goback")}</Text>
-                </Pressable>
-                <Text
-                    style={styles.score}
-                    onPress={() => console.warn(selectedWord)}
-                >
-                    {t("game.score")}: {gameScore}
-                </Text>
-                <View style={styles.container}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Image source={Logo} style={styles.logo}/>
+                    <Text style={styles.homeico}>{t('game.goback')}</Text>
+                    <Text style={styles.scoreText} onPress={()=>console.warn(selectedWord)}>{t('game.score')}: {gameScore}</Text>
+                </View>
+                <View style={styles.grid}>
                     {rows.map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
                             {row.map((cell, cellIndex) => (
@@ -367,59 +342,57 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center",
+    },
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    homeico:{
+        alignSelf:'flex-start',
+        fontFamily:'Fun',
+        color:'white',
+        fontSize:wp('7%'),
+        top:wp('7%')
+    },  
+    logo: {
+        width: wp("50%"),
+        height: hp("10%"),
+        alignSelf:'center'
+    },
+    grid: {
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    header:{
+        width:wp('80%'),
+    },
     row: {
         flexDirection: "row",
     },
-    back: {
-        fontFamily: "Fun",
-        color: "white",
-        fontSize: wp("6%"),
-        left: "5%",
-        bottom: wp("25%"),
-    },
-    backgroundImage: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        width: wp("100%"),
-        height: hp("110%"),
-    },
     cell: {
-        width: wp("12%"),
-        height: wp("12%"),
+        width: wp("15%"),
+        height: wp("15%"),
         alignItems: "center",
         justifyContent: "center",
-        marginHorizontal: 8,
-        marginVertical: 8,
+        marginHorizontal: 4,
+        marginVertical: 4,
         borderRadius: 8,
-        bottom: wp("30%"),
     },
     cellText: {
-        color: "white",
-        fontSize: wp("6%"),
+        fontSize: wp("8%"),
+        color: "#fff",
         fontFamily: "Fun",
     },
-    containerMain: {
-        justifyContent: "center",
-        alignItems: "center",
-        flex: 1,
-    },
-    homeIco: {
-        right: wp("35%"),
-    },
-    logo: {
-        width: wp("50%"),
-        height: hp("40%"),
-        bottom: wp("0%"),
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-    },
-    score: {
-        fontFamily: "Fun",
-        fontSize: wp("6%"),
-        color: "white",
-        bottom: wp("31%"),
-        left: wp("30%"),
-    },
+    scoreText:{
+        fontFamily:'Fun',
+        color:'white',
+        fontSize:wp('7%'),
+        alignSelf:'flex-end'
+    }
 });
