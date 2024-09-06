@@ -1,7 +1,7 @@
 import string
 import json
 
-filepath = "C:/Users/hfk/Desktop/words.txt"
+filepath = ".."
 
 with open(filepath,'r', encoding='utf-8') as file:
     content = file.read()
