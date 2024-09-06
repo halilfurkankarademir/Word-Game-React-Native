@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+# Word Hunt
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Word Hunt** is a multilingual word game inspired by Wordle, developed using React Native. This game features dynamic word and keyboard layout changes based on the selected language, offering a unique twist on a classic concept.
 
-## Get started
+## 📦 Getting Started
 
-1. Install dependencies
+To get started with Word Hunt, follow these instructions to set up and run the project locally.
+
+### Prerequisites
+
+Ensure you have the following tools installed on your machine:
+- [Node.js](https://nodejs.org/) (LTS version recommended)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) (`npm install -g expo-cli`)
+- [Git](https://git-scm.com/)
+
+### Installation
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/halilfurkankarademir/word.git
+   
+2. **Navigate to the Project Directory:**
+
+   ```bash
+   cd wordle
+
+3. **Install Dependencies:**
 
    ```bash
    npm install
-   ```
 
-2. Start the app
+4. **Start the Development Server:**
 
    ```bash
-    npx expo start
-   ```
+   expo start
 
-In the output, you'll find options to open the app in a
+# 🚀 Running the App
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+To run the app on a physical device or emulator, use the QR code provided in the Expo developer tools or follow the instructions for your platform:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+iOS: Use the Expo Go app to scan the QR code or run the project directly on an iOS simulator.
 
-## Get a fresh project
+Android: Use the Expo Go app to scan the QR code or run the project directly on an Android emulator.
 
-When you're ready, run:
+# 🔧 Technologies Used
+React Native: Framework for building native apps using React.
 
-```bash
-npm run reset-project
-```
+I18Next: For managing language translations.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+AsyncStorage: For local data storage.
 
-## Learn more
+ExpoRouter: For navigation and routing.
 
-To learn more about developing your project with Expo, look at the following resources:
+Firefly: For background images.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Reanimated: For animations.
 
-## Join the community
+# 💡 Key Features
 
-Join our community of developers creating universal apps.
+Static language content with dynamic word and keyboard layout changes 🌐
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Automatic word validation ✔️
+
+Custom win and lose screens 🏆
+
+# 🤝 Contributing
+If you'd like to contribute to this project, please fork the repository and submit a pull request.
+
+# 📜 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
