@@ -27,15 +27,14 @@ import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
 
 export default function GameScreen() {
-
-    const {t} = useTranslation();
-
+    const { t } = useTranslation();
+    const [lang, setLang] = useState('en');
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
     const [showGameOver, setShowGameOver] = useState(false);
     const [showYouWon, setShowYouWon] = useState(false);
-    const [wordsData, setWordsData] = useState(WordsTrJson);
-    const [noKeys, setNoKeys] = useState([]); // If letter is not in the word add in no keys array
+    const [wordsData, setWordsData] = useState([]);
+    const [noKeys, setNoKeys] = useState([]);
     const [gameScore, setGameScore] = useState(0);
     const [keyboardSound, setKeyboardSound] = useState();
     const [revealSound, setRevealSound] = useState();
@@ -59,24 +58,150 @@ export default function GameScreen() {
     const [animatedColors, setAnimatedColors] = useState(
         Array.from(
             { length: 5 },
-            () => Array.from({ length: 5 }, () => new Animated.Value(0)) // Animated value for opacity
+            () => Array.from({ length: 5 }, () => new Animated.Value(0))
         )
     );
 
+    const router = useRouter();
+
+    useEffect(() => {
+        const loadLanguage = async () => {
+            try {
+                const savedLang = await AsyncStorage.getItem('language');
+                if (savedLang) {
+                    setLang(savedLang);
+                }
+            } catch (error) {
+                console.error('Error loading language:', error);
+            }
+        };
+
+        loadLanguage();
+    }, []);
+
+    useEffect(() => {
+        if (lang === 'en') {
+            setWordsData(WordsEnJson);
+        } else if (lang === 'tr') {
+            setWordsData(WordsTrJson);
+        }
+    }, [lang]);
+
+    useEffect(() => {
+        const loadSound = async (soundFile, setSound) => {
+            try {
+                const { sound } = await Audio.Sound.createAsync(soundFile);
+                setSound(sound);
+                await sound.setVolumeAsync(0.05);
+            } catch (error) {
+                console.error("Error loading sound:", error);
+            }
+        };
+
+        loadSound(require("../assets/sounds/keyboard.mp3"), setKeyboardSound);
+        loadSound(require("../assets/sounds/reveal.mp3"), setRevealSound);
+        loadSound(require("../assets/sounds/button-click.mp3"), setGoBackSound);
+
+        return () => {
+            keyboardSound?.unloadAsync();
+            revealSound?.unloadAsync();
+            goBackSound?.unloadAsync();
+        };
+    }, []);
+
+    useEffect(() => {
+        const backAction = () => {
+            router.push("/HomeScreen");
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    useEffect(() => {
+        if (selectedWord && wordsData) {
+            const letters = selectedWord.split("");
+            setRows(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("")
+                )
+            );
+            setColors(
+                Array.from({ length: letters.length }, () =>
+                    new Array(letters.length).fill("#4a4a4a")
+                )
+            );
+            setAnimatedColors(
+                Array.from({ length: letters.length }, () =>
+                    Array.from(
+                        { length: letters.length },
+                        () => new Animated.Value(0)
+                    )
+                )
+            );
+        }
+    }, [selectedWord]);
+
+
+    useEffect(() => {
+        randomWord();
+    }, [wordsData]);
+
+
+    useEffect(() => {
+        const checkGameStatus = () => {
+            if (currentRow >= selectedWord.length && word.join("") !== selectedWord) {
+                setHasWon(false);
+                setShowYouWon(false);
+                setShowGameOver(true);
+            }
+            if (rightLetterLength === selectedWord.length) {
+                setHasWon(true);
+                setShowYouWon(true);
+                setShowGameOver(false);
+            }
+        };
+        checkGameStatus();
+    }, [currentRow, rightLetterLength, selectedWord, word]);
+
+    useEffect(() => {
+        if (showGameOver || showYouWon) {
+            _storeData(gameScore);
+        }
+        if (showGameOver) {
+            router.push("/GameOver");
+        }
+        if (showYouWon) {
+            router.push("/YouWon");
+        }
+    }, [showGameOver, showYouWon, gameScore]);
+
+    useEffect(() => {
+        if (currentCol > 4) {
+            checkWord();
+        }
+    }, [currentCol]);
+
     const playKeyboardSound = async () => {
         if (keyboardSound) {
-            await keyboardSound.replayAsync(); // Play the button sound
+            await keyboardSound.replayAsync();
         }
     };
+
     const playRevealSound = async () => {
         if (revealSound) {
-            await revealSound.replayAsync(); // Play the button sound
+            await revealSound.replayAsync();
         }
     };
 
     const playGoBackSound = async () => {
         if (goBackSound) {
-            await goBackSound.replayAsync(); // Play the button sound
+            await goBackSound.replayAsync();
         }
     };
 
@@ -84,23 +209,21 @@ export default function GameScreen() {
         ToastAndroid.show("Word can not be empty!", ToastAndroid.SHORT);
     };
 
-    // Router
-    const router = useRouter();
-
-    // Functions
-    function getRandomNumber(min, max) {
+    const getRandomNumber = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    };
 
     const randomWord = () => {
-        const randomIndex = getRandomNumber(0, wordsData.length - 1);
-        setSelectedWord(wordsData[randomIndex]);
+        if (wordsData.length > 0) {
+            const randomIndex = getRandomNumber(0, wordsData.length - 1);
+            setSelectedWord(wordsData[randomIndex]);
+        }
     };
 
     const animateCell = (rowIndex, cellIndex, newColor) => {
         Animated.timing(animatedColors[rowIndex][cellIndex], {
             toValue: 1,
-            duration: 500, // Duration of the fade-in effect
+            duration: 500,
             useNativeDriver: false,
         }).start();
     };
@@ -143,15 +266,15 @@ export default function GameScreen() {
 
             for (let i = 0; i < selectedWord.length; i++) {
                 if (word[i] === selectedWord[i]) {
-                    newColors[currentRow][i] = "#50ad44"; // Correct letter
+                    newColors[currentRow][i] = "#50ad44";
                     correctLettersCount++;
                     setGameScore((score) => score + 10);
                     animateCell(currentRow, i, "#50ad44");
                 } else if (selectedWord.includes(word[i])) {
-                    newColors[currentRow][i] = "#dea709"; // Correct letter wrong place
+                    newColors[currentRow][i] = "#dea709";
                     animateCell(currentRow, i, "#dea709");
                 } else {
-                    newColors[currentRow][i] = "#919191"; // Wrong letter
+                    newColors[currentRow][i] = "#919191";
                     setNoKeys((prev) => [...prev, word[i]]);
                     animateCell(currentRow, i, "#919191");
                 }
@@ -171,21 +294,6 @@ export default function GameScreen() {
         }
     };
 
-    const hasFinished = () => {
-        const wordInput = word.join("");
-
-        if (currentRow >= selectedWord.length && wordInput !== selectedWord) {
-            setHasWon(false);
-            setShowYouWon(false);
-            setShowGameOver(true);
-        }
-        if (rightLetterLength === selectedWord.length) {
-            setHasWon(true);
-            setShowYouWon(true);
-            setShowGameOver(false);
-        }
-    };
-
     const handlePress = async () => {
         await playGoBackSound();
         router.push("/");
@@ -200,148 +308,18 @@ export default function GameScreen() {
         }
     };
 
-    // useEffect hooks
-    useEffect(() => {
-        const backAction = () => {
-            router.push("/HomeScreen");
-            return true;
-        };
-
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
-
-        return () => backHandler.remove();
-    }, []);
-
-    useEffect(() => {
-        const loadSound = async () => {
-            try {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("../assets/sounds/keyboard.mp3")
-                );
-                setKeyboardSound(sound);
-                await sound.setVolumeAsync(0.05);
-            } catch {}
-        };
-        loadSound();
-
-        return () => {
-            if (keyboardSound) {
-                keyboardSound.unloadAsync();
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        const loadSound = async () => {
-            try {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("../assets/sounds/reveal.mp3")
-                );
-                setRevealSound(sound);
-                await sound.setVolumeAsync(0.05);
-            } catch {
-                console.error("Error loading sound:", error);
-            }
-        };
-        loadSound();
-
-        return () => {
-            if (revealSound) {
-                revealSound.unloadAsync();
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        const loadSound = async () => {
-            try {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("../assets/sounds/button-click.mp3")
-                );
-                setGoBackSound(sound); // Ses dosyasını state'e kaydet
-                await sound.setVolumeAsync(0.05); // Sesin ses düzeyini ayarla
-            } catch (error) {
-                console.error("Error loading sound:", error); // Olası hataları yakala
-            }
-        };
-
-        loadSound();
-
-        return () => {
-            if (goBackSound) {
-                goBackSound.unloadAsync();
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        if (selectedWord) {
-            const letters = selectedWord.split("");
-            setRows(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("")
-                )
-            );
-            setColors(
-                Array.from({ length: letters.length }, () =>
-                    new Array(letters.length).fill("#4a4a4a")
-                )
-            );
-            setAnimatedColors(
-                Array.from({ length: letters.length }, () =>
-                    Array.from(
-                        { length: letters.length },
-                        () => new Animated.Value(0)
-                    )
-                )
-            );
-        }
-    }, [selectedWord]);
-
-    useEffect(() => {
-        randomWord();
-    }, []);
-
-    useEffect(() => {
-        hasFinished();
-    }, [currentRow]);
-
-    useEffect(() => {
-        if (showGameOver) {
-            router.push("/GameOver");
-        }
-        if (showYouWon) {
-            router.push("/YouWon");
-        }
-    }, [showGameOver, showYouWon]);
-
-    useEffect(() => {
-        if (showGameOver || showYouWon) {
-            _storeData(gameScore);
-        }
-    }, [showGameOver, showYouWon, gameScore]);
-
-    useEffect(() => {
-        if (currentCol > 4) {
-            checkWord();
-        }
-    }, [currentCol]);
-
     return (
         <ImageBackground source={Background} style={styles.backgroundImage}>
             <View style={styles.containerMain}>
                 <Image source={Logo} style={styles.logo} resizeMode="center" />
                 <Pressable onPress={handlePress} style={styles.homeIco}>
-                    <Text style={styles.back}>{t('game.goback')}</Text>
+                    <Text style={styles.back}>{t("game.goback")}</Text>
                 </Pressable>
                 <Text
                     style={styles.score}
                     onPress={() => console.warn(selectedWord)}
                 >
-                    {t('game.score')}: {gameScore}
+                    {t("game.score")}: {gameScore}
                 </Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (
@@ -406,16 +384,6 @@ const styles = StyleSheet.create({
         width: wp("100%"),
         height: hp("110%"),
     },
-    button: {
-        width: wp("10%"),
-        height: hp("5%"),
-        padding: wp("5%"),
-        backgroundColor: "transparent",
-        borderRadius: 5,
-        zIndex: 10,
-        top: wp("19%"),
-        right: wp("42%"),
-    },
     cell: {
         width: wp("12%"),
         height: wp("12%"),
@@ -452,7 +420,6 @@ const styles = StyleSheet.create({
         fontSize: wp("6%"),
         color: "white",
         bottom: wp("31%"),
-        right: wp("12%"),
-        alignSelf: "flex-end",
+        left: wp("30%"),
     },
 });

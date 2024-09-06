@@ -12,7 +12,6 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Settings from "../components/Settings";
 import Logo from "../assets/images/wh_logo_small.png";
 import Background from "../assets/images/background.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -24,13 +23,14 @@ import {
 } from "react-native-responsive-screen";
 import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
+import TRflag from "../assets/images/tr.png"
+import UKflag from "../assets/images/uk.png"
 
 
 export default function HomeScreen() {
 
     const {t} = useTranslation();
 
-    const [isSettingsVisible, setIsSettingsVisible] = useState(false);
     const [music, setMusic] = useState(true);
     const [buttonSound, setButtonSound] = useState();
     const [backgroundMusic, setBackgroundMusic] = useState();
@@ -124,7 +124,7 @@ export default function HomeScreen() {
 
     const openSettings = async () => {
         await playButtonSound();
-        setIsSettingsVisible(true);
+        router.push('/Settings');
     };
 
     const toggleMusic = async () => {
@@ -156,15 +156,7 @@ export default function HomeScreen() {
                 <ImageBackground
                     source={Background}
                     style={styles.backgroundImage}
-                >
-                    {isSettingsVisible && (
-                        <Settings
-                            isVisible={isSettingsVisible}
-                            handleClose={() => setIsSettingsVisible(false)}
-                            toggleMusic={toggleMusic}
-                            musicEnabled={music}
-                        />
-                    )}
+                >                
                     <Image
                         source={Logo}
                         style={styles.logo}
@@ -196,14 +188,14 @@ export default function HomeScreen() {
                     <Text
                         style={{
                             fontFamily: "Fun",
-                            top: "35%",
+                            top: hp('33%'),
                             color: "white",
-                            fontSize: wp("5%"),
+                            fontSize: wp("4%"),
                         }}
                     >
                         {t('home.support')}
                     </Text>
-                    <View style={{ flexDirection: "row", top: hp("29%") }}>
+                    <View style={{ flexDirection: "row", top: hp("27%") }}>
                         <Pressable
                             onPress={() =>
                                 openLink(
