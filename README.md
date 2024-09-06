@@ -18,7 +18,7 @@ Ensure you have the following tools installed on your machine:
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/halilfurkankarademir/word.git
+   git clone https://github.com/halilfurkankarademir/Word-Hunt.git
    
 2. **Navigate to the Project Directory:**
 
