@@ -22,41 +22,13 @@ import { useRouter } from "expo-router";
 export default function Settings({ toggleMusic }) {
     const [switchSound, setSwitchSound] = useState();
     const { t, i18n } = useTranslation();
-    const [musicEnabled, setMusicEnabled] = useState(false);
 
     const router = useRouter();
 
-    const playSwitchSound = async () => {
-        if (switchSound) {
-            await switchSound.replayAsync();
-        }
-    };
 
     const closeSettings = () =>{
         router.push('/HomeScreen');
     }
-
-    useEffect(() => {
-        const loadSound = async () => {
-            try {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("../assets/sounds/switch.mp3")
-                );
-                setSwitchSound(sound);
-                await sound.setVolumeAsync(0.05);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        loadSound();
-
-        return () => {
-            if (switchSound) {
-                switchSound.unloadAsync();
-            }
-        };
-    }, []);
 
     const handleLanguageChange = async (lang) => {
         await AsyncStorage.setItem("language", lang); // Dil tercihini kaydet
@@ -121,23 +93,6 @@ export default function Settings({ toggleMusic }) {
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.settingsRow}>
-                    <Text style={styles.text}>
-                        {t("settings.music")}{" "}
-                        <FontAwesome5 name="music" size={18} color="white" />
-                        {"  "}
-                    </Text>
-                    <Switch
-                        value={musicEnabled}
-                        onValueChange={async () => {
-                            await playSwitchSound();
-                            toggleMusic();
-                            setMusicEnabled(!musicEnabled); // Toggle state
-                        }}
-                        thumbColor={musicEnabled ? "#e4b979" : "#f4f3f4"}
-                        trackColor={{ false: "#767577", true: "#767577" }}
-                    />
-                </View>
             </View>
         </ImageBackground>
     );

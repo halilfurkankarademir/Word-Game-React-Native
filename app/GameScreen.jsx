@@ -293,7 +293,7 @@ export default function GameScreen() {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Image source={Logo} style={styles.logo}/>
-                    <Text style={styles.homeico}>{t('game.goback')}</Text>
+                    <Text style={styles.homeico} onPress={()=>router.push("/HomeScreen")}>{t('game.goback')}</Text>
                     <Text style={styles.scoreText} onPress={()=>console.warn(selectedWord)}>{t('game.score')}: {gameScore}</Text>
                 </View>
                 <View style={styles.grid}>

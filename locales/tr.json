@@ -23,7 +23,7 @@
     "howtoplay":{
         "title": "Nasıl Oynanır?",
         "wrong" :"Kelime, bu harfi içermiyor.",
-        "wrongplace" : "Kelime harfi içeriyor fakat farklı konumda.",
+        "wrongplace" : "Kelime, harfi içeriyor fakat farklı konumda.",
         "correct" : "Harf doğru konumda.",
         "button": "Anladım!"
     },

@@ -39,11 +39,6 @@ export default function HomeScreen() {
 
     const router = useRouter();
 
-    const showToast = async () => {
-        await playButtonSound();
-        ToastAndroid.show("Not available right now!", ToastAndroid.SHORT);
-    };
-
     useEffect(() => {
         const loadSounds = async () => {
             // Load button sound
