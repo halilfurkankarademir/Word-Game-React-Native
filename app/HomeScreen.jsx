@@ -22,8 +22,14 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
+
 
 export default function HomeScreen() {
+
+    const {t} = useTranslation();
+
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
     const [music, setMusic] = useState(true);
     const [buttonSound, setButtonSound] = useState();
@@ -171,21 +177,21 @@ export default function HomeScreen() {
                             style={styles.buttons}
                             onPress={() => startGame()}
                         >
-                            <Text style={styles.text}>Play</Text>
+                            <Text style={styles.text}>{t('home.play')}</Text>
                         </Pressable>
                     </Animated.View>
                     <Pressable
                         style={styles.buttons}
                         onPress={() => openSettings()}
                     >
-                        <Text style={styles.text}>Settings</Text>
+                        <Text style={styles.text}>{t('home.settings')}</Text>
                     </Pressable>
 
                     <Pressable
                         style={styles.buttons}
                         onPress={() => redirectHowToPlay()}
                     >
-                        <Text style={styles.text}>How To Play ?</Text>
+                        <Text style={styles.text}>{t('home.howtoplay')}</Text>
                     </Pressable>
                     <Text
                         style={{
@@ -195,7 +201,7 @@ export default function HomeScreen() {
                             fontSize: wp("5%"),
                         }}
                     >
-                        Support developer
+                        {t('home.support')}
                     </Text>
                     <View style={{ flexDirection: "row", top: hp("29%") }}>
                         <Pressable

@@ -1,0 +1,35 @@
+{   
+    "home":{
+        "play": "Oyna",
+        "settings" : "Ayarlar",
+        "howtoplay" : "Nasıl Oynanır?",
+        "support" :  "Geliştiriciyi Destekle"
+    },
+    "game":{
+        "goback": "Geri Dön",
+        "score" : "Skor"
+    },
+    "gameover":{
+        "title": "Kaybettin :(",
+        "correct" : "Doğru kelime:",
+        "tryagain": "Tekrar Dene",
+        "home" : "Ana Sayfa"
+    },
+    "youwon":{
+        "title": "Kazandın!",
+        "newgame": "Yeni Oyun",
+        "home" : "Ana Sayfa"
+    },
+    "howtoplay":{
+        "title": "Nasıl Oynanır?",
+        "wrong" :"Kelime, bu harfi içermiyor.",
+        "wrongplace" : "Kelime harfi içeriyor fakat farklı konumda.",
+        "correct" : "Harf doğru konumda.",
+        "button": "Anladım!"
+    },
+    "settings" : {
+        "title" : "Ayarlar",
+        "music" : "Müzik",
+        "language" : "Dil"
+    }
+}

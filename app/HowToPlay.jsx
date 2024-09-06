@@ -3,9 +3,13 @@ import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Background from "../assets/images/howtoplay.png"
 import { useRouter} from 'expo-router';
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
 
 export default function HowToPlay() {
     
+    const {t} = useTranslation();
+
     const router = useRouter();
     
     const homepage = () =>{
@@ -14,21 +18,21 @@ export default function HowToPlay() {
 
     return (
     <ImageBackground style={{flex:1,justifyContent:'center',alignItems:'center',}} source={Background}>
-      <Text style={styles.title}>How To Play?</Text>
+      <Text style={styles.title}>{t('howtoplay.title')}</Text>
       <View style={{flexDirection:'row'}}>
         <View style={styles.cell1}></View>
-        <Text style={styles.text}>The word does not include this letter.</Text>
+        <Text style={styles.text}>{t('howtoplay.wrong')}</Text>
       </View>
       <View style={{flexDirection:'row'}}>
         <View style={styles.cell2}></View>
-        <Text style={styles.text}>The word includes this letter but not in this position.</Text>
+        <Text style={styles.text}>{t('howtoplay.wrongplace')}</Text>
       </View>
       <View style={{flexDirection:'row'}}>
         <View style={styles.cell3}></View>
-        <Text style={styles.text}>The letter is in the correct position.</Text>
+        <Text style={styles.text}>{t('howtoplay.correct')}</Text>
       </View>
       <Pressable style={styles.button} onPress={homepage}>
-        <Text style={{fontFamily:'Fun', color:'white', fontSize:wp('6%')}}>I got it!</Text>
+        <Text style={{fontFamily:'Fun', color:'white', fontSize:wp('6%')}}>{t('howtoplay.button')}</Text>
       </Pressable>
     </ImageBackground>
   )

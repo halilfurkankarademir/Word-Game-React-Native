@@ -23,8 +23,13 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
 
 export default function GameScreen() {
+
+    const {t} = useTranslation();
+
     const [selectedWord, setSelectedWord] = useState("");
     const [hasWon, setHasWon] = useState(false);
     const [showGameOver, setShowGameOver] = useState(false);
@@ -330,13 +335,13 @@ export default function GameScreen() {
             <View style={styles.containerMain}>
                 <Image source={Logo} style={styles.logo} resizeMode="center" />
                 <Pressable onPress={handlePress} style={styles.homeIco}>
-                    <Text style={styles.back}>Go Back</Text>
+                    <Text style={styles.back}>{t('game.goback')}</Text>
                 </Pressable>
                 <Text
                     style={styles.score}
                     onPress={() => console.warn(selectedWord)}
                 >
-                    Score: {gameScore}
+                    {t('game.score')}: {gameScore}
                 </Text>
                 <View style={styles.container}>
                     {rows.map((row, rowIndex) => (

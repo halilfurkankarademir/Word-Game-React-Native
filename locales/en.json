@@ -1,0 +1,35 @@
+{   
+    "home":{
+        "play": "Play",
+        "settings" : "Settings",
+        "howtoplay" : "How To Play?",
+        "support" :  "Support Developer"
+    },
+    "game":{
+        "goback": "Go Back",
+        "score" : "Score"
+    },
+    "gameover":{
+        "title": "You Lost :(",
+        "correct" : "Correct word is:",
+        "tryagain": "Try Again",
+        "home" : "Home Page"
+    },
+    "youwon":{
+        "title": "You Won!",
+        "newgame": "New Game",
+        "home" : "Home Page"
+    },
+    "howtoplay":{
+        "title": "How To Play?",
+        "wrong" :"The word does not include this letter.",
+        "wrongplace" : "The word includes this letter but not in this position.",
+        "correct" : "The letter is in the correct position.",
+        "button": "I got it!"
+    },
+    "settings" : {
+        "title" : "Settings",
+        "music" : "Music",
+        "language" : "Langauge"
+    }
+}

@@ -7,6 +7,8 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function Settings({
@@ -16,6 +18,8 @@ export default function Settings({
     musicEnabled,
 }) {
     const [switchSound, setSwitchSound] = useState();
+
+    const { t } = useTranslation();
 
     const playSwitchSound = async () => {
         if (switchSound) {
@@ -54,11 +58,11 @@ export default function Settings({
                         style={styles.closeIco}
                         onPress={handleClose}
                     />
-                    <Text style={styles.title}>Settings</Text>
+                    <Text style={styles.title}>{t("settings.title")}</Text>
 
                     <View style={styles.settingsRow}>
                         <Text style={styles.text}>
-                            Music{" "}
+                            {t("settings.music")}{" "}
                             <FontAwesome5
                                 name="music"
                                 size={24}

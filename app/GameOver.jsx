@@ -15,8 +15,12 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
 
 export default function GameOver({}) {
+    const { t } = useTranslation();
+
     const router = useRouter();
 
     const [word, setWord] = useState("");
@@ -115,20 +119,20 @@ export default function GameOver({}) {
     return (
         <>
             <ImageBackground source={Background} style={styles.backgroundImage}>
-                <Text style={styles.title}>You Lost :(</Text>
+                <Text style={styles.title}>{t("gameover.title")}</Text>
                 <Text style={styles.text}>
-                    Correct word is:{" "}
+                    {t("gameover.correct")}{" "}
                     <Text style={{ fontFamily: "Fun", color: "#23de5b" }}>
                         {word}
                     </Text>
                 </Text>
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                     <Pressable style={styles.button} onPress={newGame}>
-                        <Text style={styles.text}>Try Again</Text>
+                        <Text style={styles.text}>{t('gameover.tryagain')}</Text>
                     </Pressable>
                 </Animated.View>
                 <Pressable style={styles.button} onPress={redirectHome}>
-                    <Text style={styles.text}>Home Page</Text>
+                    <Text style={styles.text}>{t('gameover.home')}</Text>
                 </Pressable>
             </ImageBackground>
         </>

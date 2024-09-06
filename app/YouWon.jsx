@@ -18,8 +18,13 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import i18next from "../services/i18next";
+import { useTranslation } from "react-i18next";
 
 export default function YouWon({}) {
+    
+    const {t} = useTranslation();
+    
     const router = useRouter();
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -128,14 +133,14 @@ export default function YouWon({}) {
                         resizeMode="contain"
                     />
                 </Animated.View>
-                <Text style={styles.title}>You Won !</Text>
+                <Text style={styles.title}>{t('youwon.title')}</Text>
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                     <Pressable style={styles.button} onPress={newGame}>
-                        <Text style={styles.text}>New Game</Text>
+                        <Text style={styles.text}>{t('youwon.newgame')}</Text>
                     </Pressable>
                 </Animated.View>
                 <Pressable style={styles.button} onPress={redirectHome}>
-                    <Text style={styles.text}>Home Page</Text>
+                    <Text style={styles.text}>{t('youwon.home')}</Text>
                 </Pressable>
                 <ConfettiCannon
                     count={50}
