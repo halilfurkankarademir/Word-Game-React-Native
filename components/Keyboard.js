@@ -133,7 +133,7 @@ export default function KeyboardLayout({ onKeyPressed, noKeys }) {
 
 const styles = StyleSheet.create({
     keyboard: {
-        top: wp("10%"),
+        top: wp("5%"),
     },
     row: {
         flexDirection: "row",

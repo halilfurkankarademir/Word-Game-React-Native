@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
         top:wp('7%')
     },  
     logo: {
+        top:wp('5%'),
         width: wp("50%"),
         height: hp("10%"),
         alignSelf:'center'
