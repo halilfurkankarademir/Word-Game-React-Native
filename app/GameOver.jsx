@@ -15,7 +15,6 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
 
 export default function GameOver({}) {
@@ -37,7 +36,9 @@ export default function GameOver({}) {
                     setWord(value);
                     console.log(value);
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.error("Failed to retrieve word", error);
+            }
         };
         _retrieveData();
     }, []);
@@ -68,7 +69,9 @@ export default function GameOver({}) {
                 setSound(sound);
                 await sound.playAsync();
                 await sound.setVolumeAsync(0.1);
-            } catch {}
+            } catch (error) {
+                console.error("Failed to load fail sound", error);
+            }
         };
 
         loadSound();
@@ -89,7 +92,9 @@ export default function GameOver({}) {
                 );
                 setButtonSound(sound);
                 await sound.setVolumeAsync(0.05);
-            } catch {}
+            } catch (error) {
+                console.error("Failed to load button sound", error);
+            }
         };
         loadSound();
 
@@ -98,6 +103,20 @@ export default function GameOver({}) {
                 buttonSound.unloadAsync();
             }
         };
+    }, []);
+
+    useEffect(() => {
+        const updateLoseCount = async () => {
+            try {
+                const loseCount = await AsyncStorage.getItem('loseCount');
+                let count = loseCount ? parseInt(loseCount, 10) : 0;
+                count += 1;
+                await AsyncStorage.setItem('loseCount', count.toString());
+            } catch (error) {
+                console.error("Failed to update lose count", error);
+            }
+        };
+        updateLoseCount();
     }, []);
 
     const playButtonSound = async () => {

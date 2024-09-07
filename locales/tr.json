@@ -31,5 +31,12 @@
         "title" : "Ayarlar",
         "music" : "Müzik",
         "language" : "Dil"
+    },
+    "stats" :{
+        "title" : "İstatistikler",
+        "times" : "Oynama sayın",
+        "score" : "Toplam skorun",
+        "win" : "Kazanma sayın",
+        "lose" : "Kaybetme sayın"
     }
 }

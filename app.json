@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/wh_logo_small.png",
         "backgroundColor": "#000000"
@@ -30,6 +31,7 @@
     "plugins": [
       "expo-router",
       "expo-build-properties",
+      ["@react-native-google-signin/google-signin"],
       [
         "react-native-google-mobile-ads",
         {

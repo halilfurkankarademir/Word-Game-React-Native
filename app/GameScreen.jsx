@@ -265,24 +265,26 @@ export default function GameScreen() {
                     animateCell(currentRow, i, "#919191");
                 }
             }
-
             setRightLetterLength(correctLettersCount);
             setCurrentRow((prevRow) => prevRow + 1);
             setCurrentCol(0);
             setWord([]);
             setColors(newColors);
-
-            _storeData(
-                correctLettersCount === selectedWord.length
-                    ? gameScore + 10
-                    : gameScore
-            );
         }
     };
 
-    const _storeData = async (score) => {
+    const _storeData = async (newScore) => {
         try {
-            await AsyncStorage.setItem("score", score.toString());
+            const storedScore = await AsyncStorage.getItem("score");
+            const storedTimesPlayed = await AsyncStorage.getItem("timesPlayed");
+
+            const currentScore = storedScore ? parseInt(storedScore, 10) : 0;
+            const updatedScore = currentScore + newScore;
+            const currentTimesPlayed = storedTimesPlayed ? parseInt(storedTimesPlayed, 10) : 0;
+            const updatedTimesPlayed = currentTimesPlayed + 1;
+
+            await AsyncStorage.setItem("score", updatedScore.toString());
+            await AsyncStorage.setItem("timesPlayed", updatedTimesPlayed.toString());
         } catch (error) {
             console.error("Error saving score:", error);
         }

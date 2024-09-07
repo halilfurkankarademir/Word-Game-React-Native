@@ -31,5 +31,12 @@
         "title" : "Settings",
         "music" : "Music",
         "language" : "Langauge"
+    },
+    "stats" :{
+        "title" : "Stats",
+        "times" : "Times played",
+        "score" : "Your total score",
+        "win" : "Win count",
+        "lose" : "Lose count"
     }
 }

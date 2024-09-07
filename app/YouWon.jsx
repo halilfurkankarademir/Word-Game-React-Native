@@ -18,12 +18,11 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
 
 export default function YouWon({}) {
     
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     
     const router = useRouter();
 
@@ -105,6 +104,20 @@ export default function YouWon({}) {
                 buttonSound.unloadAsync();
             }
         };
+    }, []);
+
+    useEffect(() => {
+        const updateWinCount = async () => {
+            try {
+                const winCount = await AsyncStorage.getItem('winCount');
+                let count = winCount ? parseInt(winCount, 10) : 0;
+                count += 1;
+                await AsyncStorage.setItem('winCount', count.toString());
+            } catch (error) {
+                console.error("Failed to update win count", error);
+            }
+        };
+        updateWinCount();
     }, []);
 
     const playButtonSound = async () => {

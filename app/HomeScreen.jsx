@@ -23,8 +23,7 @@ import {
 } from "react-native-responsive-screen";
 import i18next from "../services/i18next";
 import { useTranslation } from "react-i18next";
-import TRflag from "../assets/images/tr.png"
-import UKflag from "../assets/images/uk.png"
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 export default function HomeScreen() {
@@ -121,6 +120,10 @@ export default function HomeScreen() {
         await playButtonSound();
         router.push('/Settings');
     };
+    const openStats = async () => {
+        await playButtonSound();
+        router.push('/Stats');
+    };
 
     const toggleMusic = async () => {
         const newMusicState = !music;
@@ -151,12 +154,14 @@ export default function HomeScreen() {
                 <ImageBackground
                     source={Background}
                     style={styles.backgroundImage}
+                    resizeMode="cover"
                 >                
                     <Image
                         source={Logo}
                         style={styles.logo}
                         resizeMode="center"
                     />
+                    <Ionicons name="stats-chart" size={wp('5%')} color="white" style={styles.stats} onPress={openStats}/>
                     <Animated.View
                         style={{ transform: [{ scale: scaleAnim }] }}
                     >
@@ -274,6 +279,10 @@ const styles = StyleSheet.create({
         height: hp("100%"),
         position: "absolute",
         bottom: wp("60%"),
+    },
+    stats:{
+        bottom:wp('50%'),
+        alignSelf:'center',
     },
     text: {
         color: "white",
